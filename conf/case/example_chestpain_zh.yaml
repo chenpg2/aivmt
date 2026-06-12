@@ -1,11 +1,57 @@
 # Example standardized-patient case (Chinese).
+# Migrated to the formal ClinicalCase schema (Stream B). Clinical content preserved
+# verbatim; unstated facts are TODO_COLLAB (linter WARNINGS). `difficulty` is the legacy
+# clinical-complexity label; SP behavioral difficulty is a compile-time parameter.
 case_id: chestpain_zh_01
+version: "1.0.0"
 title: 急性胸痛
 language: zh
+specialty: cardiology
 difficulty: moderate
+
+demographics:
+  age: "58"
+  sex: male
+  occupation: TODO_COLLAB
+  marital_status: TODO_COLLAB
+
+chief_complaint: 2小时前突发胸骨后压榨样疼痛
+
+hpi:
+  onset: 2小时前突发
+  location: 胸骨后
+  duration: 2小时
+  character: 压榨样
+  aggravating: TODO_COLLAB
+  relieving: TODO_COLLAB
+  timing: TODO_COLLAB
+  severity: TODO_COLLAB
+  associated_symptoms: []
+
+pmh: [TODO_COLLAB]
+medications: [TODO_COLLAB]
+allergies: [TODO_COLLAB]
+family_history: [TODO_COLLAB]
+social_history: [TODO_COLLAB]
+
+hidden_info:
+  - info_id: hi_radiation
+    content: 疼痛可放射至左臂。
+    trigger: 询问放射部位(q_radiation)
+  - info_id: hi_sweating
+    content: 发作时伴出汗。
+    trigger: 询问伴随症状(出汗/恶心/呼吸困难)(q_associated)
+  - info_id: hi_risk_factors
+    content: TODO_COLLAB
+    trigger: 询问既往史与危险因素(q_pmh)
+
+emotional_state: 语气可略显焦虑。
+disclosure_profile: 只在被直接问到时回答,不主动透露信息。
+
 persona: |
   你是一位58岁男性,2小时前突发胸骨后压榨样疼痛,可放射至左臂,伴出汗。
   你只在被直接问到时回答,不主动透露信息;语气可略显焦虑。
+
 history_checklist:
   - {item_id: q_onset, text: 询问起病时间与诱因, weight: 1.0}
   - {item_id: q_character, text: 询问疼痛性质, weight: 1.0}

@@ -7,29 +7,12 @@ reasoning probe is posed, and the full turn-by-turn transcript is captured for s
 
 from __future__ import annotations
 
-from typing import cast
+from typing import Optional, cast
 
+from .case_schema import ClinicalCase
 from .llm.base import BaseLLMClient
+from .persona import compile_persona, wrap_persona_text
 from .schemas import Case, Speaker, Telemetry, Transcript, Turn
-
-_PATIENT_SYS = {
-    "zh": (
-        "你在扮演一位标准化病人,用于训练医学生问诊。严格遵守:\n"
-        "1) 只回答学生明确问到的内容,绝不主动透露其他信息;\n"
-        "2) 用第一人称、口语化、简短(1-3句)地回答,符合人物设定;\n"
-        "3) 不要使用医学术语;听不懂时可以反问;\n"
-        "4) 不要给诊断、不要评价学生、不要跳出角色。\n"
-        "你的人物设定如下:\n{persona}"
-    ),
-    "en": (
-        "You are role-playing a standardized patient to train medical students. Strictly:\n"
-        "1) Answer ONLY what the student explicitly asks; never volunteer other information;\n"
-        "2) Reply in the first person, colloquial and short (1-3 sentences), in character;\n"
-        "3) Avoid medical jargon; you may ask for clarification;\n"
-        "4) Do not give a diagnosis, do not evaluate the student, do not break character.\n"
-        "Your persona:\n{persona}"
-    ),
-}
 
 _REASONING_PROMPT = {
     "zh": "请说出你的鉴别诊断及理由,以及下一步建议的检查或处理。",
@@ -38,13 +21,43 @@ _REASONING_PROMPT = {
 
 
 class PatientAgent:
-    """Stateful standardized-patient agent for one encounter."""
+    """Stateful standardized-patient agent for one encounter.
 
-    def __init__(self, case: Case, llm: BaseLLMClient) -> None:
+    The SP system prompt is built by the persona compiler (:mod:`aivmt.persona`).
+    Given the legacy flat ``Case`` it wraps the free-text persona; given a
+    structured ``ClinicalCase`` (via :meth:`from_clinical_case`) it compiles the
+    full structured prompt. ``difficulty`` is a compile-time behavioral knob.
+    """
+
+    def __init__(
+        self,
+        case: Case,
+        llm: BaseLLMClient,
+        *,
+        difficulty: str = "standard",
+        system: Optional[str] = None,
+    ) -> None:
         self.case = case
         self.llm = llm
-        self._system = _PATIENT_SYS[case.language].format(persona=case.persona)
+        self.difficulty = difficulty
+        self._system = (
+            system if system is not None
+            else wrap_persona_text(case.persona, case.language, difficulty)
+        )
         self._history: list[dict] = []  # chat messages for the patient model
+
+    @classmethod
+    def from_clinical_case(
+        cls,
+        clinical_case: ClinicalCase,
+        llm: BaseLLMClient,
+        *,
+        difficulty: str = "standard",
+        language: Optional[str] = None,
+    ) -> "PatientAgent":
+        """Build an agent from a structured case, compiling the full SP prompt."""
+        system = compile_persona(clinical_case, difficulty, language)
+        return cls(clinical_case.to_case(), llm, difficulty=difficulty, system=system)
 
     def reply(self, student_utterance: str) -> str:
         """Return the patient's spoken reply to one student utterance."""

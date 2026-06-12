@@ -1,8 +1,64 @@
 # 妇产科病例 3(简单)— 草稿,需妇产科老师审定
+# 已迁移至正式 ClinicalCase 结构(Stream B)。临床内容逐字保留;未给出的字段填 TODO_COLLAB
+# (linter 报 WARNING)。`difficulty` 为临床复杂度标签;行为难度为编译期参数,不写入文件。
 case_id: obgyn_vaginitis_zh_01
+version: "1.0.0"
 title: 白带增多伴外阴瘙痒(拟诊外阴阴道假丝酵母菌病)
 language: zh
+specialty: obgyn
 difficulty: simple
+
+demographics:
+  age: "32"
+  sex: female
+  occupation: TODO_COLLAB
+  marital_status: 已婚
+
+chief_complaint: 近5天白带明显增多,像豆腐渣一样
+
+hpi:
+  onset: 近5天
+  location: 外阴
+  duration: 5天
+  character: 白带明显增多,像豆腐渣一样
+  aggravating: TODO_COLLAB
+  relieving: TODO_COLLAB
+  timing: TODO_COLLAB
+  severity: TODO_COLLAB
+  associated_symptoms: []
+
+pmh: [无糖尿病, 以前没得过这种病(无类似阴道炎发作史)]
+# 近期抗生素使用是假丝酵母菌病的关键诱因线索,作为门控信息只放在 hidden_info(hi_antibiotic),
+# 由清单项 hx_trigger 赚取;阴道冲洗习惯同理放在 hi_hygiene(hx_hygiene)。两者均不在常规背景中重复。
+medications: []
+allergies: [TODO_COLLAB]
+family_history: [TODO_COLLAB]
+social_history: []
+
+# 相关阴性(被问及时如实回答):原 persona 中的“没有发热,没有腹痛,小便正常”。
+pertinent_negatives: [没有发热, 没有腹痛, 小便正常]
+
+obgyn:
+  lmp: 末次月经两周前
+  menstrual_history: 月经正常
+  obstetric_history: TODO_COLLAB
+  contraception: 有避孕,不太可能怀孕
+  sexual_history: 已婚,性伴侣固定,对方没有不舒服
+
+hidden_info:
+  - info_id: hi_itching
+    content: 外阴很痒,有点灼热感。
+    trigger: 询问瘙痒/灼热等局部症状(hx_itching)
+  - info_id: hi_antibiotic
+    content: 两周前感冒,自己吃了一周“消炎药”(抗生素)。
+    trigger: 询问诱因(近期抗生素/糖尿病/妊娠)(hx_trigger)
+  - info_id: hi_hygiene
+    content: 平时偶尔用洗液冲洗。
+    trigger: 询问卫生习惯(阴道冲洗等)(hx_hygiene)
+
+emotional_state: 口语化,有点不好意思。
+disclosure_profile: 开场主诉只说一个最主要的症状;只回答被直接问到的内容,不主动透露;没设定的细节回答“没有”。
+
 persona: |
   你是一位32岁女性。近5天白带明显增多,像豆腐渣一样,外阴很痒,有点灼热感,来就诊。
   两周前感冒,自己吃了一周"消炎药"(抗生素)。没有发热,没有腹痛,小便正常。
@@ -10,6 +66,7 @@ persona: |
   没有糖尿病。以前没得过这种病。平时偶尔用洗液冲洗。
   扮演要求:开场主诉只说一个最主要的症状(如“肚子疼”“月经不正常”“下面不舒服”),其余症状和细节即使相关也必须等被具体问到才说;只回答被直接问到的内容,不主动透露;说话口语化,有点不好意思;
   学生的用词实在听不懂时才简短问一句那是什么意思,听得懂就直接回答,不评论学生用词;没设定的细节回答"没有"。
+
 history_checklist:
   - {item_id: hx_discharge, text: 询问分泌物性状/颜色/气味, weight: 1.0}
   - {item_id: hx_itching, text: 询问瘙痒/灼热等局部症状, weight: 1.0}

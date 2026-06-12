@@ -1,12 +1,59 @@
 # Example standardized-patient case (English) — primary-language example.
+# Migrated to the formal ClinicalCase schema (Stream B). Clinical content is preserved
+# verbatim from the original persona; facts not stated in the source are TODO_COLLAB
+# (linter reports these as WARNINGS, never invented). `difficulty` below is the legacy
+# clinical-complexity label; the SP behavioral difficulty is a compile-time parameter.
 case_id: chestpain_en_01
+version: "1.0.0"
 title: Acute chest pain
 language: en
+specialty: cardiology
 difficulty: moderate
+
+demographics:
+  age: "58"
+  sex: male
+  occupation: TODO_COLLAB
+  marital_status: TODO_COLLAB
+
+chief_complaint: Sudden crushing retrosternal chest pain that began 2 hours ago.
+
+hpi:
+  onset: Began 2 hours ago
+  location: Retrosternal
+  duration: 2 hours
+  character: Crushing
+  aggravating: TODO_COLLAB
+  relieving: TODO_COLLAB
+  timing: TODO_COLLAB
+  severity: TODO_COLLAB
+  associated_symptoms: []
+
+pmh: [TODO_COLLAB]
+medications: [TODO_COLLAB]
+allergies: [TODO_COLLAB]
+family_history: [TODO_COLLAB]
+social_history: [TODO_COLLAB]
+
+hidden_info:
+  - info_id: hi_radiation
+    content: The pain radiates to the left arm.
+    trigger: Asked about radiation of the pain (q_radiation)
+  - info_id: hi_sweating
+    content: He is sweating.
+    trigger: Asked about associated symptoms such as sweating, nausea, or breathlessness (q_associated)
+  - info_id: hi_risk_factors
+    content: TODO_COLLAB
+    trigger: Asked about past history and cardiac risk factors (q_pmh)
+
+emotional_state: Mildly anxious.
+disclosure_profile: Answers only when asked directly; does not volunteer information.
+
 persona: |
   You are a 58-year-old man with sudden crushing retrosternal chest pain that began
   2 hours ago, radiating to the left arm, with sweating. Answer only when asked directly;
   do not volunteer information. You may sound mildly anxious.
+
 history_checklist:
   - {item_id: q_onset, text: Ask about onset time and triggers, weight: 1.0}
   - {item_id: q_character, text: Ask about pain character, weight: 1.0}
