@@ -1,0 +1,81 @@
+{
+  "_meta": {
+    "label": "SYNTHETIC — hand-authored Chinese ASR confusion table for deterministic noise simulation",
+    "not_real_data": true,
+    "purpose": "Structurally-motivated near-homophone / tone / medical-term / segmentation confusions used to corrupt zh transcripts toward a target CER. Each entry is a plausible ASR misrecognition grounded in published error mechanisms (pinyin homophone, tone confusion, OOV medical-entity fallback). These are illustrative, not an empirical lexicon.",
+    "sources": [
+      "arxiv 2407.01909 (pinyin homophone/tone)",
+      "arxiv 2409.14074 MultiMed (medical-entity CER)",
+      "arxiv 2509.19817 MMedFD (real clinical dialogue WER)"
+    ]
+  },
+  "homophone": {
+    "_doc": "Same/near pinyin, different character — substitution preserves syllable count (1 char -> 1 char).",
+    "症": "证",
+    "状": "壮",
+    "诊": "针",
+    "断": "短",
+    "疼": "腾",
+    "痛": "通",
+    "激": "基",
+    "增": "曾",
+    "查": "茶",
+    "验": "演",
+    "压": "鸭",
+    "血": "雪",
+    "肿": "种",
+    "胀": "涨",
+    "晕": "云",
+    "麻": "马"
+  },
+  "tone": {
+    "_doc": "Same initial+final, wrong tone class — far-field reverberation smears pitch contour.",
+    "烧": "少",
+    "头": "投",
+    "剧": "据",
+    "烈": "列",
+    "酸": "蒜",
+    "胃": "未",
+    "肝": "干",
+    "肾": "甚",
+    "咳": "渴",
+    "喘": "船"
+  },
+  "medical_term": {
+    "_doc": "Multi-char medical entity -> phonetically-proximate but clinically-wrong string (OOV fallback).",
+    "麻痹": "麻闭",
+    "根本": "跟本",
+    "异位妊娠": "易位人身",
+    "宫外孕": "公外运",
+    "阑尾炎": "兰尾烟",
+    "心脏病": "新脏病",
+    "高血压": "高雪压",
+    "糖尿病": "糖鸟病",
+    "阴道流血": "因到流学",
+    "腹痛": "副通",
+    "头晕": "头云",
+    "坠胀": "缀涨"
+  },
+  "function_words": {
+    "_doc": "Acoustically-weak monosyllabic 虚词 that ASR beam search prunes (deletion). 不/没 deletion flips clinical polarity.",
+    "deletable": ["了", "的", "吗", "呢", "啊", "吧", "地", "得", "着", "过"],
+    "negation": ["不", "没", "无"]
+  },
+  "number_unit": {
+    "_doc": "ITN errors: duration/quantity morphemes conflated with time/other units.",
+    "天": "点",
+    "周": "州",
+    "次": "刺",
+    "度": "渡",
+    "分钟": "分中",
+    "小时": "小事"
+  },
+  "segmentation": {
+    "_doc": "Boundary-shift candidates: a 2-char compound that ASR may split or merge wrongly, emitted as a wrong compound. 1->1 char per position keeps length stable.",
+    "病史": "病使",
+    "月经": "悦经",
+    "规律": "归律",
+    "持续": "迟续",
+    "位置": "位之"
+  }
+}

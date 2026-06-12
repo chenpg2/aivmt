@@ -176,3 +176,61 @@ class PhaseRobustness(Phase):
             lambda: check_shuffled_repeats_collapse_retest_icc(seed=self.seed),
             lambda: check_degenerate_input_is_nan_not_silent(seed=self.seed),
         ]
+
+
+@register_phase("phase_asr_robustness")
+class PhaseAsrRobustness(Phase):
+    """SQ1 ASR-robustness: how scorer validity (ICC vs gold) degrades as ASR CER rises.
+
+    The un-flashed AIVMT voice puck has no hardware AEC, so the transcript the scorer reads is
+    corrupted by TTS echo + far-field zh ASR error. This phase quantifies the resulting validity loss
+    as an ICC-degradation curve over CER in {0, 0.05, 0.15, 0.30}. Real numbers come from the batch
+    runner (``scripts/asr_robustness.py``) which writes the artifact this phase validates. Until that
+    batch runs on real models the phase reports a seeded fixture cross-check (clean-anchor ICC and the
+    high-CER drop on the synthetic zh fixture) so the evidence table is populated reproducibly and the
+    negative controls still fire.
+    """
+
+    inputs = [PROJECT_ROOT / "results" / "phase_asr_robustness" / "asr_robustness.json"]
+    outputs = [PROJECT_ROOT / "results" / "phase_asr_robustness" / "asr_robustness.json"]
+    seed = SEED
+
+    def run(self) -> dict:
+        from harness.contracts.asr_robustness import check_asr_robustness_inputs
+
+        check_asr_robustness_inputs(self.inputs[0])
+        import json
+
+        return {"curves": json.loads(Path(self.inputs[0]).read_text(encoding="utf-8"))}
+
+    def benchmark(self) -> dict:
+        from harness.sanity.asr_robustness import check_degradation_is_monotone_ish
+
+        if self.inputs_exist():
+            from harness.contracts.asr_robustness import check_asr_robustness_inputs
+
+            check_asr_robustness_inputs(self.inputs[0])
+            return {"status": "COMPUTED", "artifact": str(self.inputs[0].name)}
+
+        m = check_degradation_is_monotone_ish(seed=self.seed)
+        return {
+            "status": "PENDING_REAL_DATA",
+            "fixture_clean_icc": round(m["clean_icc"], 3),
+            "fixture_high_cer_icc": round(m["high_cer_icc"], 3),
+            "fixture_icc_drop": round(m["drop"], 3),
+        }
+
+    def sanity(self) -> List[Callable[[], dict]]:
+        from harness.sanity.asr_robustness import (
+            check_clean_level_reproduces_anchor,
+            check_degenerate_curve_point_is_nan_not_silent,
+            check_degradation_is_monotone_ish,
+            check_scramble_collapses_icc,
+        )
+
+        return [
+            lambda: check_clean_level_reproduces_anchor(seed=self.seed),
+            lambda: check_degradation_is_monotone_ish(seed=self.seed),
+            lambda: check_scramble_collapses_icc(seed=self.seed),
+            lambda: check_degenerate_curve_point_is_nan_not_silent(seed=self.seed),
+        ]
