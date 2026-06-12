@@ -1,0 +1,45 @@
+=== REHEARSAL: obgyn_ectopic_zh_01 — 停经后腹痛伴阴道流血(拟诊异位妊娠) ===
+
+学生: 您好,我是医学生,可以问您几个问题吗?今天是什么不舒服来的?
+病人: 今天我感觉右下腹隐痛越来越厉害，伴着少量暗红色的阴道流血。站起身时还头晕，肛门感觉有点坠胀。对，就是这些症状。
+
+学生: 这种肚子疼是什么时候开始的?有多久了?
+病人: 疼是从昨天开始的，今天才更明显，已经持续了一整天。
+
+学生: 您末次月经是什么时候?平时月经规律吗,大概多少天一次?
+病人: 末次月经是大约六个星期前，平时大概28到30天一次，挺规律的。
+
+学生: 除了肚子疼,有没有阴道流血?如果有,量多不多、什么颜色?
+病人: 有的，阴道有一点暗红色的流血，量不大，像是点点的。
+
+学生: 疼在肚子的哪个位置?是一直疼还是阵阵疼,有没有加重?
+病人: 疼在右下腹，像是下面的那块。不是一直的，像阵阵的痛，今天比昨天更厉害。
+
+学生: 有没有头晕、眼前发黑,或者肛门那种往下坠的感觉?
+病人: 有一点头晕，但眼睛没变黑；肛门确实有坠胀的感觉。
+
+学生: 您结婚了吗?有性生活吗?平时怎么避孕的?
+病人: 是的，我已婚，性生活正常，平时主要用避孕套，但有时也会忘记用。
+
+学生: 以前怀过孕吗?生过孩子或做过流产吗?
+病人: 是的，我怀过一次孕，后来做了人工流产，没有生孩子。
+
+学生: 以前有没有得过盆腔炎,或者做过妇科方面的手术?
+病人: 以前得过盆腔炎，三年前一次，吃药好了。没有做过妇科手术。
+
+系统: 请说出你的鉴别诊断及理由,以及下一步建议的检查或处理。
+学生(推理): 我主要考虑异位妊娠,因为停经六周、有下腹痛和少量阴道流血,还有头晕和肛门坠胀,加上既往盆腔炎史是高危因素。我会先查尿和血 hCG、做经阴道超声看宫内有没有孕囊,监测生命体征,必要时查血红蛋白评估有无内出血。
+
+[transcript saved] /Users/chenpg/Downloads/soft/xiaozhi/AIVMT/data/transcripts/REHEARSAL_good.json
+
+=== SCORING (gpt-oss:20b, temp 0) ===
+history_completion: 1.00
+items covered: ['hx_lmp', 'hx_menstrual', 'hx_bleeding', 'hx_pain', 'hx_sexual_contraception', 'hx_obstetric', 'hx_associated', 'hx_pid']
+items MISSED:  []
+SEGUE: {'set_the_stage': 1.0, 'elicit_information': 1.0, 'give_information': 0.5, 'understand_perspective': 0.0, 'end_encounter': 0.0}
+reasoning: 1.00
+OVERALL: 0.800
+feedback: The student demonstrated excellent history‑taking and clear reasoning, but missed several key elements of a complete encounter, such as providing patient information, assessing vitals, and closing the visit with empathy and safety netting.
+
+[scored encounter saved] /Users/chenpg/Downloads/soft/xiaozhi/AIVMT/results/rehearsal_good_scored.json
+=== REHEARSAL COMPLETE ===

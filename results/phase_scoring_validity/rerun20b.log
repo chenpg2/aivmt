@@ -1,0 +1,47 @@
+
+=== model: gpt-oss:20b (30 synthetic encounters) ===
+  scored 1/30
+  scored 2/30
+  scored 3/30
+  scored 4/30
+  scored 5/30
+  scored 6/30
+  scored 7/30
+  scored 8/30
+  scored 9/30
+  scored 10/30
+  scored 11/30
+  scored 12/30
+  scored 13/30
+  scored 14/30
+  scored 15/30
+  scored 16/30
+  scored 17/30
+  scored 18/30
+  scored 19/30
+  scored 20/30
+  scored 21/30
+  scored 22/30
+  scored 23/30
+  scored 24/30
+  scored 25/30
+  scored 26/30
+  scored 27/30
+  scored 28/30
+  scored 29/30
+  scored 30/30
+{
+  "model": "gpt-oss:20b",
+  "n_scored": 30,
+  "n_encounter_failures": 0,
+  "llm_calls": 90,
+  "parse_failures": 0,
+  "parse_success_rate": 1.0,
+  "refusal_rate": 0.0,
+  "icc2_1": 0.8877,
+  "icc2_k": 0.9405,
+  "GATE_PASS": true
+}
+GATE (gpt-oss:20b): PASS -> proceed
+
+CAVEAT: gold is designed (optimistic floor); the real validity claim uses faculty.

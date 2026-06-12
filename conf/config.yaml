@@ -1,0 +1,14 @@
+# Hydra root config for AIVMT scoring.
+defaults:
+  - case: example_chestpain_en
+  - llm: ollama_gptoss     # local open-weight model via Ollama; override with llm=mock for offline
+  - _self_
+
+seed: 42
+language: en             # English primary; Chinese supported (e.g. case=example_chestpain_zh)
+
+scoring:
+  weights:
+    history: 0.4
+    segue: 0.4
+    reasoning: 0.2

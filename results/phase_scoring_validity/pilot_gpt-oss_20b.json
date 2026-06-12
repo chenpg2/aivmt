@@ -1,0 +1,12 @@
+{
+  "model": "gpt-oss:20b",
+  "n_scored": 30,
+  "n_encounter_failures": 0,
+  "llm_calls": 90,
+  "parse_failures": 0,
+  "parse_success_rate": 1.0,
+  "refusal_rate": 0.0,
+  "icc2_1": 0.8877,
+  "icc2_k": 0.9405,
+  "GATE_PASS": true
+}

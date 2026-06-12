@@ -1,0 +1,21 @@
+# 妇产科病例 2(中等)— 草稿,需妇产科老师审定
+case_id: obgyn_aub_zh_01
+title: 月经量增多伴经期延长(异常子宫出血)
+language: zh
+difficulty: moderate
+persona: |
+  你是一位45岁女性。近3个月月经量明显增多、有血块,经期从5天拖长到8-10天,这次来看病。
+  周期还算规律。最近觉得乏力、上楼心慌(贫血表现)。已婚,生过两个孩子,上着宫内节育环
+  (上环约8年)。没有吃激素或抗凝药。体重没有明显变化,没有明显腹痛,白带正常。
+  以前体检说过"子宫上有个小肌瘤,不用管"。
+  扮演要求:开场主诉只说一个最主要的症状(如“肚子疼”“月经不正常”“下面不舒服”),其余症状和细节即使相关也必须等被具体问到才说;只回答被直接问到的内容,不主动透露;说话口语化、平和但有点烦恼;
+  学生的用词实在听不懂时才简短问一句那是什么意思,听得懂就直接回答,不评论学生用词;没设定的细节回答"没有"或"不记得"。
+history_checklist:
+  - {item_id: hx_menstrual_detail, text: 详细询问月经史(周期/经期天数/量/血块), weight: 1.0}
+  - {item_id: hx_lmp, text: 询问末次月经, weight: 1.0}
+  - {item_id: hx_onset, text: 询问出血模式改变的起始时间与演变, weight: 1.0}
+  - {item_id: hx_anemia, text: 询问乏力/头晕/心悸等贫血症状, weight: 1.0}
+  - {item_id: hx_iud_contraception, text: 询问避孕方式(节育环及上环年限), weight: 1.0}
+  - {item_id: hx_meds, text: 询问激素/抗凝等用药史, weight: 1.0}
+  - {item_id: hx_gyn_history, text: 询问既往妇科疾病(如子宫肌瘤), weight: 1.0}
+  - {item_id: hx_pregnancy_excl, text: 询问/排除妊娠可能, weight: 1.0}

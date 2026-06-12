@@ -1,0 +1,3 @@
+# Offline deterministic client for tests / dry runs.
+name: mock
+model_id: mock

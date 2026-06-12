@@ -1,0 +1,15 @@
+# Example standardized-patient case (English) — primary-language example.
+case_id: chestpain_en_01
+title: Acute chest pain
+language: en
+difficulty: moderate
+persona: |
+  You are a 58-year-old man with sudden crushing retrosternal chest pain that began
+  2 hours ago, radiating to the left arm, with sweating. Answer only when asked directly;
+  do not volunteer information. You may sound mildly anxious.
+history_checklist:
+  - {item_id: q_onset, text: Ask about onset time and triggers, weight: 1.0}
+  - {item_id: q_character, text: Ask about pain character, weight: 1.0}
+  - {item_id: q_radiation, text: Ask about radiation, weight: 1.0}
+  - {item_id: q_associated, text: Ask about associated symptoms (sweating/nausea/dyspnea), weight: 1.0}
+  - {item_id: q_pmh, text: Ask about past history and risk factors, weight: 1.0}

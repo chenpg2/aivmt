@@ -1,0 +1,6 @@
+# Local open-weight model served by Ollama (OpenAI-compatible endpoint).
+name: openai_compat
+model_id: gpt-oss:20b
+base_url: http://localhost:11434/v1
+api_key: ollama          # Ollama ignores the value but the client requires a non-empty key
+temperature: 0.0

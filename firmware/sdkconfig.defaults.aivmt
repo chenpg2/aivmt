@@ -1,0 +1,16 @@
+# AIVMT build defaults — append to the fork's sdkconfig.defaults.
+# (Comments mark decisions; values to be confirmed in menuconfig.)
+
+# Logging
+CONFIG_LOG_DEFAULT_LEVEL_INFO=y
+
+# Board: bread-compact-wifi (set via the fork's board-selection Kconfig)
+# TODO: CONFIG_BOARD_TYPE_BREAD_COMPACT_WIFI=y  (exact symbol per fork)
+
+# Standardized OSCE turns: prefer push-to-talk half-duplex over free-dialogue wake-word
+# (clean turn segmentation -> better transcripts + mitigates lack of hardware AEC).
+# TODO: expose AIVMT_PTT_GPIO and AIVMT_PTT_ENABLE in components/aivmt_sp/Kconfig
+
+# Local-only / confidentiality: point endpoint at the self-hosted server; no cloud fallback.
+# TODO: AIVMT_SERVER_URL="ws://<local-server>:<port>/xiaozhi/v1/"
+# TODO: AIVMT_LOCAL_ONLY=y

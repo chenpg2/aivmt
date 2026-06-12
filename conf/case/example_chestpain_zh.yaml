@@ -1,0 +1,14 @@
+# Example standardized-patient case (Chinese).
+case_id: chestpain_zh_01
+title: 急性胸痛
+language: zh
+difficulty: moderate
+persona: |
+  你是一位58岁男性,2小时前突发胸骨后压榨样疼痛,可放射至左臂,伴出汗。
+  你只在被直接问到时回答,不主动透露信息;语气可略显焦虑。
+history_checklist:
+  - {item_id: q_onset, text: 询问起病时间与诱因, weight: 1.0}
+  - {item_id: q_character, text: 询问疼痛性质, weight: 1.0}
+  - {item_id: q_radiation, text: 询问放射部位, weight: 1.0}
+  - {item_id: q_associated, text: 询问伴随症状(出汗/恶心/呼吸困难), weight: 1.0}
+  - {item_id: q_pmh, text: 询问既往史与危险因素, weight: 1.0}

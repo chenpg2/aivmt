@@ -1,0 +1,12 @@
+{
+  "model": "qwen2.5:7b",
+  "n_scored": 30,
+  "n_encounter_failures": 0,
+  "llm_calls": 90,
+  "parse_failures": 0,
+  "parse_success_rate": 1.0,
+  "refusal_rate": 0.0,
+  "icc2_1": 0.6776,
+  "icc2_k": 0.8078,
+  "GATE_PASS": true
+}

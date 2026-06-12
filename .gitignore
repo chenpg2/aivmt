@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.pytest_cache/
+
+# uv
+uv.lock
+
+# data / outputs (de-identified study data must NOT be committed)
+data/transcripts/
+data/encounters/
+outputs/
+*.wav
+*.bin
+
+# host test binary
+firmware/test_host/fsm_test
+
+# secrets
+.env
