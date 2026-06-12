@@ -2,4 +2,4 @@
 
 | phase | metrics |
 |---|---|
-| phase_scoring_validity | status=PENDING_REAL_DATA; fixture_true_icc=0.968; fixture_shuffled_icc=0.007 |
+| phase_scoring_validity | status=PENDING_REAL_DATA; fixture_true_overall_icc=0.957; fixture_shuffled_overall_icc=0.019 |

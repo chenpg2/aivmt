@@ -18,13 +18,13 @@ SF = [
 
 
 def test_icc2_1_matches_known_value() -> None:
-    # Known ICC(2,1) ~= 0.290 for the Shrout & Fleiss example.
-    assert abs(icc(SF, "icc2_1") - 0.290) < 0.01
+    # Shrout & Fleiss (1979): ICC(2,1) = 0.290 (validated to 3 decimals).
+    assert round(icc(SF, "icc2_1"), 3) == 0.290
 
 
 def test_icc2_k_matches_known_value() -> None:
-    # Known ICC(2,k=4) ~= 0.620 for the Shrout & Fleiss example.
-    assert abs(icc(SF, "icc2_k") - 0.620) < 0.01
+    # Shrout & Fleiss (1979): ICC(2,k=4) = 0.620 (validated to 3 decimals).
+    assert round(icc(SF, "icc2_k"), 3) == 0.620
 
 
 def test_icc_perfect_agreement_is_one() -> None:

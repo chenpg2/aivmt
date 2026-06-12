@@ -54,66 +54,75 @@ class Phase:
 
 @register_phase("phase_scoring_validity")
 class PhaseScoringValidity(Phase):
-    """SQ1: agreement of local-model automated scores with faculty (ICC)."""
+    """SQ1: validity of local-model automated scores vs faculty (full encounters x raters suite)."""
 
     inputs = [PROJECT_ROOT / "data" / "encounters", PROJECT_ROOT / "data" / "faculty_ratings.csv"]
-    outputs = [PROJECT_ROOT / "results" / "phase_scoring_validity" / "icc.json"]
+    outputs = [PROJECT_ROOT / "results" / "phase_scoring_validity" / "validity_suite.json"]
     seed = SEED
 
-    def run(self) -> dict:
-        import csv
+    @staticmethod
+    def _load_system_scores(enc_dir: Path) -> dict[str, dict[str, float]]:
+        """Flatten each scored encounter into {encounter_id: {dimension: score}}."""
         import json
 
-        import numpy as np
+        from aivmt.metrics.validity import SEGUE_DOMAINS
 
-        from harness.contracts.scoring_validity import check_scoring_validity_inputs
-        from aivmt.metrics import icc
-
-        check_scoring_validity_inputs(self.inputs[0], self.inputs[1])
-        enc_dir, fac_csv = Path(self.inputs[0]), Path(self.inputs[1])
-
-        # System overall per encounter (from saved encounter JSONs).
-        system: dict[str, float] = {}
+        system: dict[str, dict[str, float]] = {}
         for f in sorted(enc_dir.glob("*.json")):
             d = json.loads(f.read_text(encoding="utf-8"))
-            system[d["encounter_id"]] = float(d["score"]["overall"])
+            score = d["score"]
+            row: dict[str, float] = {
+                "overall": float(score["overall"]),
+                "history_completion": float(score["history_completion"]),
+                "reasoning": float(score["reasoning"]),
+            }
+            for dom in SEGUE_DOMAINS:
+                row[dom] = float(score["segue"][dom])
+            system[d["encounter_id"]] = row
+        return system
 
-        # Faculty overall per encounter (mean across raters).
-        faculty: dict[str, list[float]] = {}
+    @staticmethod
+    def _load_faculty_rows(fac_csv: Path) -> list[dict[str, object]]:
+        import csv
+
         with fac_csv.open(encoding="utf-8") as fh:
-            for row in csv.DictReader(fh):
-                if row.get("overall"):
-                    faculty.setdefault(row["encounter_id"], []).append(float(row["overall"]))
+            return [dict(row) for row in csv.DictReader(fh)]
 
-        ids = sorted(set(system) & {k for k, v in faculty.items() if v})
-        if len(ids) < 2:
-            raise AssertionError("need >=2 paired encounters for ICC")
-        sys_scores = [system[i] for i in ids]
-        fac_scores = [sum(faculty[i]) / len(faculty[i]) for i in ids]
-        matrix = np.column_stack([sys_scores, fac_scores])
-        result = {
-            "n": len(ids),
-            "icc2_1": icc(matrix, "icc2_1"),
-            "icc2_k": icc(matrix, "icc2_k"),
-        }
-        out = Path(self.outputs[0])
-        out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(json.dumps(result, indent=2), encoding="utf-8")
+    def run(self) -> dict:
+        from harness.contracts.scoring_validity import check_scoring_validity_inputs
+        from aivmt.metrics import run_validity_suite, write_validity_artifacts
+
+        check_scoring_validity_inputs(self.inputs[0], self.inputs[1])
+        system = self._load_system_scores(Path(self.inputs[0]))
+        faculty_rows = self._load_faculty_rows(Path(self.inputs[1]))
+
+        result = run_validity_suite(system, faculty_rows, seed=self.seed)
+        write_validity_artifacts(result, Path(self.outputs[0]).parent)
         return result
 
     def benchmark(self) -> dict:
-        # Real ICC once data exists. Until then, expose the machinery-verified fixture
-        # (true-vs-shuffled ICC) so the evidence table is populated and reproducible.
-        from harness.sanity.scoring_validity import check_shuffled_pairing_collapses_icc
+        # Real headline numbers once data exists; until then, the full-suite fixture cross-check
+        # (true-vs-shuffled overall ICC) populates the evidence table reproducibly.
+        from aivmt.metrics import headline_metrics
+        from harness.sanity.scoring_validity import check_validity_suite_negative_control
 
-        m = check_shuffled_pairing_collapses_icc(seed=self.seed)
+        if self.inputs_exist():
+            return {"status": "REAL_DATA", **headline_metrics(self.run())}
+
+        m = check_validity_suite_negative_control(seed=self.seed)
         return {
             "status": "PENDING_REAL_DATA",
-            "fixture_true_icc": round(m["true_icc"], 3),
-            "fixture_shuffled_icc": round(m["shuffled_icc"], 3),
+            "fixture_true_overall_icc": round(m["true_icc"], 3),
+            "fixture_shuffled_overall_icc": round(m["shuffled_icc"], 3),
         }
 
     def sanity(self) -> List[Callable[[], dict]]:
-        from harness.sanity.scoring_validity import check_shuffled_pairing_collapses_icc
+        from harness.sanity.scoring_validity import (
+            check_shuffled_pairing_collapses_icc,
+            check_validity_suite_negative_control,
+        )
 
-        return [lambda: check_shuffled_pairing_collapses_icc(seed=self.seed)]
+        return [
+            lambda: check_shuffled_pairing_collapses_icc(seed=self.seed),
+            lambda: check_validity_suite_negative_control(seed=self.seed),
+        ]

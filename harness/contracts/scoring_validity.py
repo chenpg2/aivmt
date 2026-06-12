@@ -1,8 +1,11 @@
 """Input contract for the SQ1 scoring-validity phase.
 
 Inputs:
-  - encounters_dir: directory of scored-encounter JSONs (see aivmt.dataio.encounter_to_dict)
-  - faculty_csv: blinded faculty rating sheet (see aivmt.dataio.FACULTY_SHEET_FIELDS)
+  - encounters_dir: directory of scored-encounter JSONs (see aivmt.dataio.encounter_to_dict).
+    Each must carry the overall score AND the subscores the validity suite analyses: the five
+    SEGUE domains, history_completion, and reasoning.
+  - faculty_csv: filled blinded faculty rating sheet (long format, FACULTY_SHEET_FIELDS) with a
+    rater_id and >=2 distinct raters, scoring the same dimensions.
 No silent fallback: a violated assumption raises, it is never worked around.
 """
 
@@ -14,7 +17,18 @@ import math
 from pathlib import Path
 from typing import Union
 
+from aivmt.metrics.validity import ALL_DIMENSIONS, SEGUE_DOMAINS
+
 PathLike = Union[str, Path]
+
+#: Faculty CSV columns the validity suite requires (beyond identifiers).
+_REQUIRED_FACULTY_COLUMNS = {"encounter_id", "rater_id", *ALL_DIMENSIONS}
+
+
+def _check_unit_interval(value: object, ctx: str) -> None:
+    v = float(value)  # type: ignore[arg-type]
+    assert not math.isnan(v), f"{ctx}: NaN value"
+    assert 0.0 <= v <= 1.0, f"{ctx}: value {v} out of [0,1]"
 
 
 def check_scoring_validity_inputs(encounters_dir: PathLike, faculty_csv: PathLike) -> None:
@@ -31,24 +45,40 @@ def check_scoring_validity_inputs(encounters_dir: PathLike, faculty_csv: PathLik
         data = json.loads(f.read_text(encoding="utf-8"))
         for key in ("encounter_id", "score"):
             assert key in data, f"{f.name}: missing key '{key}'"
-        overall = data["score"].get("overall")
-        assert overall is not None and not math.isnan(float(overall)), f"{f.name}: bad overall"
-        assert 0.0 <= float(overall) <= 1.0, f"{f.name}: overall out of [0,1]"
+        score = data["score"]
+        _check_unit_interval(score.get("overall"), f"{f.name}: overall")
+        for dim in ("history_completion", "reasoning"):
+            assert dim in score, f"{f.name}: missing subscore '{dim}'"
+            _check_unit_interval(score[dim], f"{f.name}: {dim}")
+        segue = score.get("segue")
+        assert isinstance(segue, dict), f"{f.name}: missing 'segue' subscore object"
+        for dom in SEGUE_DOMAINS:
+            assert dom in segue, f"{f.name}: missing SEGUE domain '{dom}'"
+            _check_unit_interval(segue[dom], f"{f.name}: segue.{dom}")
         assert data["encounter_id"] not in enc_ids, f"duplicate encounter_id {data['encounter_id']}"
         enc_ids.add(data["encounter_id"])
 
     with fac_path.open(encoding="utf-8") as fh:
         rows = list(csv.DictReader(fh))
     assert rows, f"empty faculty csv: {fac_path}"
-    required = {"encounter_id", "overall"}
-    assert required <= set(rows[0].keys()), f"faculty csv missing columns {required - set(rows[0])}"
+    missing_cols = _REQUIRED_FACULTY_COLUMNS - set(rows[0].keys())
+    assert not missing_cols, f"faculty csv missing columns {missing_cols}"
 
-    fac_ids = {r["encounter_id"] for r in rows if r["encounter_id"]}
+    raters: set[str] = set()
+    fac_ids: set[str] = set()
+    for r in rows:
+        eid = (r.get("encounter_id") or "").strip()
+        if not eid:
+            continue
+        fac_ids.add(eid)
+        rid = (r.get("rater_id") or "").strip()
+        assert rid, f"faculty row for encounter {eid!r} has no rater_id"
+        raters.add(rid)
+        for dim in ALL_DIMENSIONS:
+            val = r.get(dim, "")
+            assert val not in ("", None), f"faculty[{eid},{rid}]: missing {dim} (no silent imputation)"
+            _check_unit_interval(val, f"faculty[{eid},{rid}].{dim}")
+
+    assert len(raters) >= 2, f"need >=2 distinct faculty raters (got {len(raters)})"
     overlap = enc_ids & fac_ids
     assert overlap, "no overlapping encounter_id between system encounters and faculty ratings"
-
-    for r in rows:
-        val = r.get("overall", "")
-        if val not in ("", None):
-            v = float(val)
-            assert 0.0 <= v <= 1.0, f"faculty overall out of [0,1] for {r['encounter_id']}"
