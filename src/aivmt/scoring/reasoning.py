@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from . import register_scorer
-from .base import BaseScorer, render_transcript, require
+from .base import BaseScorer, Exemplar, build_exemplar_block, render_transcript, require
 from ..llm.base import BaseLLMClient, LLMOutputError
 from ..schemas import Case, Transcript
 
@@ -21,9 +21,39 @@ _SYS = {
 }
 
 
-def _build_user(transcript: Transcript) -> str:
+# SYNTHETIC exemplars (NOT real patient data) for the few-shot ablation arm. They illustrate the
+# 0.0 / 0.5 / 1.0 anchors of the reasoning rubric (named diagnosis without justification = 0.5;
+# structured differential + justification + next steps = 1.0). They do not change the rubric.
+_FEW_SHOT_EXEMPLARS: dict[str, tuple[Exemplar, ...]] = {
+    "en": (
+        (
+            "Student: I think it's a heart attack.\nPatient: Okay.",
+            '{"score": 0.5, "rationale": "diagnosis named, no justification or next steps"}',
+        ),
+        (
+            "Student: Given crushing pain radiating to the arm with sweating, I'm most concerned "
+            "about acute coronary syndrome over reflux; I'll get an ECG and troponin now.",
+            '{"score": 1.0, "rationale": "ranked differential with justification and next steps"}',
+        ),
+    ),
+    "zh": (
+        (
+            "学生:我觉得是心梗。\n患者:好的。",
+            '{"score": 0.5, "rationale": "只说出诊断,无依据与下一步"}',
+        ),
+        (
+            "学生:压榨性胸痛放射到手臂伴出汗,我最担心急性冠脉综合征而非反流;"
+            "现在做心电图和肌钙蛋白。",
+            '{"score": 1.0, "rationale": "有依据的分级鉴别诊断并给出下一步"}',
+        ),
+    ),
+}
+
+
+def _build_user(case: Case, transcript: Transcript, *, few_shot: bool = False) -> str:
     schema = '{"score": 0.0, "rationale": "<=20 words"}'
-    return f"TRANSCRIPT:\n{render_transcript(transcript)}\n\nReturn JSON exactly: {schema}"
+    prefix = build_exemplar_block(_FEW_SHOT_EXEMPLARS[case.language]) if few_shot else ""
+    return f"{prefix}TRANSCRIPT:\n{render_transcript(transcript)}\n\nReturn JSON exactly: {schema}"
 
 
 @register_scorer("reasoning")
@@ -33,7 +63,8 @@ class ReasoningScorer(BaseScorer):
     name = "reasoning"
 
     def score(self, case: Case, transcript: Transcript, llm: BaseLLMClient) -> dict:
-        out = llm.complete_json(_SYS[case.language], _build_user(transcript), task="reasoning")
+        user = _build_user(case, transcript, few_shot=self.variant == "few_shot")
+        out = llm.complete_json(_SYS[case.language], user, task="reasoning")
         require("score" in out, "reasoning: missing 'score'")
         try:
             v = float(out["score"])

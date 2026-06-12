@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, Type
 
-from .base import BaseScorer
+from .base import BaseScorer, Exemplar, ScorerVariant, build_exemplar_block
 
 SCORER_REGISTRY: Dict[str, Type[BaseScorer]] = {}
 
@@ -29,4 +29,12 @@ def ScorerFactory(name: str, **kwargs: Any) -> BaseScorer:
 # Populate the registry.
 from . import checklist, reasoning, segue  # noqa: E402,F401
 
-__all__ = ["BaseScorer", "SCORER_REGISTRY", "register_scorer", "ScorerFactory"]
+__all__ = [
+    "BaseScorer",
+    "SCORER_REGISTRY",
+    "register_scorer",
+    "ScorerFactory",
+    "ScorerVariant",
+    "Exemplar",
+    "build_exemplar_block",
+]

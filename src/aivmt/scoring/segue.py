@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from . import register_scorer
-from .base import BaseScorer, render_transcript, require
+from .base import BaseScorer, Exemplar, build_exemplar_block, render_transcript, require
 from ..llm.base import BaseLLMClient, LLMOutputError
 from ..schemas import Case, Transcript
 
@@ -46,7 +46,51 @@ _SYS = {
 }
 
 
-def _build_user(case: Case, transcript: Transcript) -> str:
+# SYNTHETIC exemplars (NOT real patient data) for the few-shot ablation arm. Each pair is a short
+# transcript excerpt mapped to the rubric JSON it should produce, illustrating the {0,0.5,1.0}
+# anchors above (e.g. a clean greeting+agenda earns set_the_stage=1.0; an abrupt close earns
+# end_encounter=0.0). They do not change the rubric, only show how to apply it.
+_FEW_SHOT_EXEMPLARS: dict[str, tuple[Exemplar, ...]] = {
+    "en": (
+        (
+            "Student: Hello, I'm a medical student; may I ask about today?\n"
+            "Patient: I have a headache.\n"
+            "Student: Thanks, that's all.",
+            '{"domains": {"set_the_stage": 1.0, "elicit_information": 0.0, '
+            '"give_information": 0.0, "understand_perspective": 0.0, "end_encounter": 0.0}, '
+            '"rationale": {"set_the_stage": "greeted, introduced role, named agenda"}}',
+        ),
+        (
+            "Student: What started the pain and where does it spread?\n"
+            "Patient: Last night, to my jaw.\n"
+            "Student: What worries you most about it?",
+            '{"domains": {"set_the_stage": 0.0, "elicit_information": 1.0, '
+            '"give_information": 0.0, "understand_perspective": 0.5, "end_encounter": 0.0}, '
+            '"rationale": {"elicit_information": "focused onset/radiation history taken"}}',
+        ),
+    ),
+    "zh": (
+        (
+            "学生:您好,我是医学生,今天能问您几个问题吗?\n"
+            "患者:我头痛。\n"
+            "学生:谢谢,就这样。",
+            '{"domains": {"set_the_stage": 1.0, "elicit_information": 0.0, '
+            '"give_information": 0.0, "understand_perspective": 0.0, "end_encounter": 0.0}, '
+            '"rationale": {"set_the_stage": "问候、说明身份与议程"}}',
+        ),
+        (
+            "学生:疼痛什么时候开始,会放射到哪里?\n"
+            "患者:昨晚开始,放射到下巴。\n"
+            "学生:您最担心的是什么?",
+            '{"domains": {"set_the_stage": 0.0, "elicit_information": 1.0, '
+            '"give_information": 0.0, "understand_perspective": 0.5, "end_encounter": 0.0}, '
+            '"rationale": {"elicit_information": "聚焦起病与放射的病史采集"}}',
+        ),
+    ),
+}
+
+
+def _build_user(case: Case, transcript: Transcript, *, few_shot: bool = False) -> str:
     anchors = _ANCHORS[case.language]
     rubric = "\n".join(f"- {d}: {anchors[d]}" for d in SEGUE_DOMAINS)
     schema = (
@@ -54,7 +98,9 @@ def _build_user(case: Case, transcript: Transcript) -> str:
         + ", ".join(f'"{d}": 0.0' for d in SEGUE_DOMAINS)
         + '}, "rationale": {"<domain>": "<=12 words"}}'
     )
+    prefix = build_exemplar_block(_FEW_SHOT_EXEMPLARS[case.language]) if few_shot else ""
     return (
+        f"{prefix}"
         f"SEGUE domains & anchors:\n{rubric}\n\n"
         f"TRANSCRIPT:\n{render_transcript(transcript)}\n\n"
         f"Return JSON exactly in this shape (all 5 domains required): {schema}"
@@ -68,7 +114,8 @@ class SegueScorer(BaseScorer):
     name = "segue"
 
     def score(self, case: Case, transcript: Transcript, llm: BaseLLMClient) -> dict:
-        out = llm.complete_json(_SYS[case.language], _build_user(case, transcript), task="segue")
+        user = _build_user(case, transcript, few_shot=self.variant == "few_shot")
+        out = llm.complete_json(_SYS[case.language], user, task="segue")
         require(isinstance(out.get("domains"), dict), "segue: missing 'domains' object")
         raw = out["domains"]
         segue: dict[str, float] = {}

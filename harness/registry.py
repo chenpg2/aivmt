@@ -126,3 +126,53 @@ class PhaseScoringValidity(Phase):
             lambda: check_shuffled_pairing_collapses_icc(seed=self.seed),
             lambda: check_validity_suite_negative_control(seed=self.seed),
         ]
+
+
+@register_phase("phase_robustness")
+class PhaseRobustness(Phase):
+    """SQ1 robustness: stability of local-model scores under prompt paraphrase + stochasticity.
+
+    Real numbers come from the batch runner (``scripts/robustness.py``) which writes the artifact
+    this phase validates and summarizes. Until that batch is run on real models the phase reports a
+    seeded fixture cross-check (true-vs-shuffled test-retest ICC) so the evidence table is populated
+    reproducibly and the negative controls still fire.
+    """
+
+    inputs = [PROJECT_ROOT / "results" / "phase_robustness" / "robustness.json"]
+    outputs = [PROJECT_ROOT / "results" / "phase_robustness" / "robustness.json"]
+    seed = SEED
+
+    def run(self) -> dict:
+        from harness.contracts.robustness import check_robustness_inputs
+
+        check_robustness_inputs(self.inputs[0])
+        import json
+
+        return {"reports": json.loads(Path(self.inputs[0]).read_text(encoding="utf-8"))}
+
+    def benchmark(self) -> dict:
+        from harness.sanity.robustness import check_shuffled_repeats_collapse_retest_icc
+
+        if self.inputs_exist():
+            from harness.contracts.robustness import check_robustness_inputs
+
+            check_robustness_inputs(self.inputs[0])
+            return {"status": "COMPUTED", "artifact": str(self.inputs[0].name)}
+
+        m = check_shuffled_repeats_collapse_retest_icc(seed=self.seed)
+        return {
+            "status": "PENDING_REAL_DATA",
+            "fixture_true_retest_icc": round(m["true_icc"], 3),
+            "fixture_shuffled_retest_icc": round(m["shuffled_icc"], 3),
+        }
+
+    def sanity(self) -> List[Callable[[], dict]]:
+        from harness.sanity.robustness import (
+            check_degenerate_input_is_nan_not_silent,
+            check_shuffled_repeats_collapse_retest_icc,
+        )
+
+        return [
+            lambda: check_shuffled_repeats_collapse_retest_icc(seed=self.seed),
+            lambda: check_degenerate_input_is_nan_not_silent(seed=self.seed),
+        ]

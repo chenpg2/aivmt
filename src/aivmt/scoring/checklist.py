@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from . import register_scorer
-from .base import BaseScorer, render_transcript, require
+from .base import BaseScorer, Exemplar, build_exemplar_block, render_transcript, require
 from ..llm.base import BaseLLMClient
 from ..schemas import Case, ItemScore, Transcript
 
@@ -18,10 +18,33 @@ _SYS = {
 }
 
 
-def _build_user(case: Case, transcript: Transcript) -> str:
+# SYNTHETIC exemplars (NOT real patient data) for the few-shot ablation arm. Each is self-contained
+# (its own tiny illustrative checklist + excerpt) showing that 'covered' lists only the item_ids the
+# transcript actually evidences, with a supporting quote. They do not change the scoring policy.
+_FEW_SHOT_EXEMPLARS: dict[str, tuple[Exemplar, ...]] = {
+    "en": (
+        (
+            "CHECKLIST:\n- q_onset: asks when symptoms started\n- q_fever: asks about fever\n"
+            "TRANSCRIPT:\nStudent: When did the cough start?\nPatient: Three days ago.",
+            '{"covered": ["q_onset"], "evidence": {"q_onset": "When did the cough start?"}}',
+        ),
+    ),
+    "zh": (
+        (
+            "CHECKLIST:\n- q_onset: 询问起病时间\n- q_fever: 询问是否发热\n"
+            "TRANSCRIPT:\n学生:咳嗽是什么时候开始的?\n患者:三天前。",
+            '{"covered": ["q_onset"], "evidence": {"q_onset": "咳嗽是什么时候开始的?"}}',
+        ),
+    ),
+}
+
+
+def _build_user(case: Case, transcript: Transcript, *, few_shot: bool = False) -> str:
     items = "\n".join(f"- {it.item_id}: {it.text}" for it in case.history_checklist)
     schema = '{"covered": ["item_id", ...], "evidence": {"item_id": "quote"}}'
+    prefix = build_exemplar_block(_FEW_SHOT_EXEMPLARS[case.language]) if few_shot else ""
     return (
+        f"{prefix}"
         f"CHECKLIST:\n{items}\n\nTRANSCRIPT:\n{render_transcript(transcript)}\n\n"
         f"Return JSON exactly (covered = item_ids the student covered): {schema}"
     )
@@ -34,7 +57,8 @@ class ChecklistScorer(BaseScorer):
     name = "checklist"
 
     def score(self, case: Case, transcript: Transcript, llm: BaseLLMClient) -> dict:
-        out = llm.complete_json(_SYS[case.language], _build_user(case, transcript), task="checklist")
+        user = _build_user(case, transcript, few_shot=self.variant == "few_shot")
+        out = llm.complete_json(_SYS[case.language], user, task="checklist")
         require(isinstance(out.get("covered"), list), "checklist: missing 'covered' list")
         covered = {str(x) for x in out["covered"]}
         evidence = out.get("evidence") or {}
