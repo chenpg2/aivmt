@@ -31,11 +31,16 @@ logger = logging.getLogger(__name__)
 #: Sentinel for a required clinical field that still needs collaborative authoring.
 TODO_COLLAB = "TODO_COLLAB"
 
+#: Upper bound on a checklist item weight — keeps the scoring normalisation (sum of weights)
+#: positive and prevents a single item from dominating; negative weights are rejected outright.
+MAX_CHECKLIST_WEIGHT = 10.0
+
 _LANGUAGES: tuple[str, ...] = ("en", "zh")
 _CLINICAL_COMPLEXITY: tuple[str, ...] = ("simple", "moderate", "complex")
 
 __all__ = [
     "TODO_COLLAB",
+    "MAX_CHECKLIST_WEIGHT",
     "CaseValidationError",
     "Demographics",
     "HPI",
@@ -281,6 +286,10 @@ def _checklist_from(data: Any, source: str) -> tuple[ChecklistItem, ...]:
         _require(
             isinstance(weight, (int, float)) and not isinstance(weight, bool),
             source, f"{s}.weight", "must be a number",
+        )
+        _require(
+            0.0 <= float(weight) <= MAX_CHECKLIST_WEIGHT,
+            source, f"{s}.weight", f"must be within [0, {MAX_CHECKLIST_WEIGHT}]",
         )
         items.append(ChecklistItem(item_id=item_id, text=text, weight=float(weight)))
     return tuple(items)

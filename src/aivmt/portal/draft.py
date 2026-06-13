@@ -101,8 +101,9 @@ def _translate_schema_error(exc: CaseValidationError) -> FieldIssue:
     field, sep, why = message.partition(" — ")
     if not sep:
         return FieldIssue(field="<draft>", message=message)
-    # strip the "<draft>:" source prefix from the dotted path
-    field = field.split(":", 1)[1] if ":" in field else field
+    # strip the "<draft>:" source prefix only — nested paths like "demographics:age" must
+    # survive intact so the zh field-label lookup matches
+    field = field.removeprefix("<draft>:")
     zh = next((zh for prefix, zh in _WHY_ZH if why.startswith(prefix)), why)
     return FieldIssue(field=field, message=f"{_label(field)}:{zh}({why})")
 

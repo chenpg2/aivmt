@@ -225,3 +225,15 @@ def test_preview_invalid_draft_422(client: TestClient) -> None:
     resp = client.post("/api/preview", json=draft)
     assert resp.status_code == 422
     assert any(e["field"] == "history_checklist" for e in resp.json()["detail"]["errors"])
+
+
+def test_nested_field_error_keeps_dotted_path_for_zh_label() -> None:
+    """Regression (portal review): nested schema paths like 'demographics:age' must survive
+    the '<draft>:' prefix strip intact so the zh field-label lookup can match them."""
+    from aivmt.case_schema import CaseValidationError
+    from aivmt.portal.draft import _translate_schema_error
+
+    issue = _translate_schema_error(
+        CaseValidationError("<draft>:demographics:age — must be a number")
+    )
+    assert issue.field == "demographics:age"

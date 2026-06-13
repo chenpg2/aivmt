@@ -112,6 +112,23 @@ def test_non_numeric_weight_is_error() -> None:
         clinical_case_from_dict(data, source="demo.yaml")
 
 
+def test_out_of_range_weight_is_error() -> None:
+    """Regression (portal review): a negative or oversized weight must be rejected at the
+    single validation source so it can never distort the scoring normalisation."""
+    from aivmt.case_schema import MAX_CHECKLIST_WEIGHT
+
+    for bad in (-5, -0.01, MAX_CHECKLIST_WEIGHT + 0.01):
+        data = _valid_dict()
+        data["history_checklist"][0]["weight"] = bad
+        with pytest.raises(CaseValidationError, match="weight"):
+            clinical_case_from_dict(data, source="demo.yaml")
+    # boundary values stay valid
+    for ok in (0.0, MAX_CHECKLIST_WEIGHT):
+        data = _valid_dict()
+        data["history_checklist"][0]["weight"] = ok
+        clinical_case_from_dict(data, source="demo.yaml")  # must not raise
+
+
 def test_placeholder_paths_lists_todo_collab_fields() -> None:
     case = clinical_case_from_dict(_valid_dict(), source="demo")
     paths = set(case.placeholder_paths())
