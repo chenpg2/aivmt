@@ -23,35 +23,35 @@ No better-than-chance agreement between the local-model automated scores and fac
 - **Primary endpoint (locked, realistic target — prereg §4 l.22–24 reframed by PROJECT_PLAN l.67):**
   two-way random-effects, absolute-agreement **ICC(2,1) ≥ 0.75** between system and faculty
   consensus is the **single primary endpoint** ("clinically useful absolute agreement").
-- **Full validity suite (prereg §10 l.85–88), reported alongside:** ICC(2,1) AND ICC(2,k) with
+- **Full validity suite (prereg §10 l.90–96), reported alongside:** ICC(2,1) AND ICC(2,k) with
   **McGraw & Wong (1996) F-based 95% CI** for the overall score and for every subscore (per SEGUE
   domain + checklist + reasoning); a **seeded bootstrap 95% CI** as an independent cross-check;
   pairwise system-vs-each-rater ICC; **weighted κ** (quadratic) for the ordinal-anchored items;
   **Bland–Altman** (bias, 95% limits of agreement, proportional-bias slope + p); **generalizability
   theory** variance components with a **D-study** projecting reliability for k = 1..5 raters; and
   **decision consistency** (raw agreement + Cohen's κ) at a pass/fail cut-score (default 0.6).
-- **Faculty inter-rater ICC** reported as the agreement **ceiling** (prereg §10 l.88).
+- **Faculty inter-rater ICC** reported as the agreement **ceiling** (prereg §10 l.96).
 - **Non-inferiority is CONDITIONAL, not primary (PROJECT_PLAN l.67):** the non-inferiority-vs-cloud
-  claim (AMTES-class ICC ≈ 0.92, margin **δ = 0.10**, one-sided 97.5% CI; prereg §4 l.23–24) is
+  claim (AMTES-class ICC ≈ 0.92, margin **δ = 0.10**, one-sided 97.5% CI; prereg §4 l.27–28) is
   **dropped unless the pilot point estimate clears ~0.80** — it is dead on arrival at a realistic
   ICC near 0.6–0.7, so it is only carried forward if the pilot warrants it.
 
 ## Sample size / power
-**Inputs locked (collaborator, prereg §11 l.99):** transcripts ample; **k = 3 faculty raters**;
-language **zh**. Power is on the 95% CI half-width of **ICC(2,1), k=3** (prereg §11 l.100–108):
+**Inputs locked (collaborator, prereg §11 l.107):** transcripts ample; **k = 3 faculty raters**;
+language **zh**. Power is on the 95% CI half-width of **ICC(2,1), k=3** (prereg §11 l.108–116):
 - **Primary target (locked): n = 150 encounters × 3 raters** → 95% CI half-width ≈ **0.07 at a
-  conservative ICC ≈ 0.70** (≈ 0.05 if ICC ≈ 0.80) (prereg §11 l.108). n is rater-hour-limited,
+  conservative ICC ≈ 0.70** (≈ 0.05 if ICC ≈ 0.80) (prereg §11 l.116). n is rater-hour-limited,
   not transcript-limited.
-- **Floor: n = 100** (CI ≈ 0.08 @0.70 / 0.06 @0.80) if the rater-burden gate binds (prereg §11 l.109).
+- **Floor: n = 100** (CI ≈ 0.08 @0.70 / 0.06 @0.80) if the rater-burden gate binds (prereg §11 l.117).
 - **Staged:** pilot **~25 transcripts** → first real ICC + measured min/rating, then scale to
-  n = 100–150 and freeze final n before the main batch (prereg §11 l.110).
+  n = 100–150 and freeze final n before the main batch (prereg §11 l.118).
 - **Contingency: n ≈ 40, k = 3** — the minimal AMTES-comparable validation (AMTES n = 31/93 sessions,
-  prereg §6 l.44 / §11 l.106; "v0.1's n ≈ 30–40", PROJECT_PLAN l.40) if recruitment falls below the
+  prereg §6 l.50 / §11 l.106; "v0.1's n ≈ 30–40", PROJECT_PLAN l.40) if recruitment falls below the
   floor; reported as a contingency, never the locked primary.
 - The earlier **n ≈ 120–150 / ICC ≈ 0.85** framing is superseded: power is recomputed at the
   realistic ICC band 0.6–0.75 with ICC(2,1) as the endpoint.
 
-## Amendment A1 — validity–cost frontier (prereg §8 l.62–73)
+## Amendment A1 — validity–cost frontier (prereg §8 l.67–75)
 The primary analysis is reframed as a **validity–cost frontier**: agreement with faculty is
 estimated **per model size tier** to locate where faculty-level validity (ICC ≥ 0.75) emerges or
 collapses. **gpt-oss:20b** is the upper-tier anchor (synthetic floor pilot ICC 0.904, parse 100%);
