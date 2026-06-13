@@ -11,6 +11,7 @@ uv.lock
 # data / outputs (de-identified study data must NOT be committed)
 data/transcripts/
 data/encounters/
+data/encounters_*/
 # generated faculty-rating sheets (runtime artifact; the schema lives in code)
 data/faculty_rating_sheet.csv
 data/faculty_ratings.csv

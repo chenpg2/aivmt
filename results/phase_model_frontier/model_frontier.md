@@ -1,4 +1,4 @@
-# Quantization frontier (auto-generated — do not edit by hand)
+# Model-size frontier (auto-generated — do not edit by hand)
 
 Validity-cost surface over (model size x quant level): ICC-vs-gold against the designed synthetic gold, JSON-parse robustness, per-encounter latency, loaded RAM/VRAM, and on-disk size. `degenerate` flags a cell whose scorer produced no between-encounter variance (ICC is an explicit nan, never a silent number).
 
