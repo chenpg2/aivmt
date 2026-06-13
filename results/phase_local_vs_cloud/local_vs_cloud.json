@@ -58,8 +58,8 @@
       "seed": 42,
       "n_transcripts": 30,
       "variant": "zero_shot",
-      "overall_icc2_1": 0.5470983805384266,
-      "overall_icc2_k": 0.7072573889554761,
+      "overall_icc2_1": 0.5613605954916231,
+      "overall_icc2_k": 0.7190659186769963,
       "overall_degenerate": false,
       "parse_success_rate": 1.0,
       "refusal_rate": 0.0,
@@ -72,14 +72,14 @@
         },
         {
           "domain": "elicit_information",
-          "icc2_1": 0.6352824955355444,
-          "icc2_k": 0.7769697251330187,
+          "icc2_1": 0.7060058968455911,
+          "icc2_k": 0.827671109638012,
           "degenerate": false
         },
         {
           "domain": "give_information",
-          "icc2_1": 0.45306241544868564,
-          "icc2_k": 0.6235966337465086,
+          "icc2_1": 0.32303198409386535,
+          "icc2_k": 0.48832074806582626,
           "degenerate": false
         },
         {
@@ -90,9 +90,54 @@
         },
         {
           "domain": "end_encounter",
-          "icc2_1": 0.09729363588780447,
-          "icc2_k": 0.17733381969191062,
+          "icc2_1": 0.1432567862522669,
+          "icc2_k": 0.25061174003065373,
           "degenerate": false
+        }
+      ]
+    },
+    {
+      "provider": "claude-opus-4-7",
+      "role": "cloud",
+      "model_id": "claude-opus-4-7",
+      "seed": 42,
+      "n_transcripts": 30,
+      "variant": "zero_shot",
+      "overall_icc2_1": 0.6977960687493596,
+      "overall_icc2_k": 0.8220022199290098,
+      "overall_degenerate": false,
+      "parse_success_rate": 1.0,
+      "refusal_rate": 0.0,
+      "domains": [
+        {
+          "domain": "set_the_stage",
+          "icc2_1": 0.2913013015138324,
+          "icc2_k": 0.45117479734951227,
+          "degenerate": false
+        },
+        {
+          "domain": "elicit_information",
+          "icc2_1": 0.6638436203430427,
+          "icc2_k": 0.7979639579423634,
+          "degenerate": false
+        },
+        {
+          "domain": "give_information",
+          "icc2_1": 0.5262721468255067,
+          "icc2_k": 0.689617704051142,
+          "degenerate": false
+        },
+        {
+          "domain": "understand_perspective",
+          "icc2_1": NaN,
+          "icc2_k": NaN,
+          "degenerate": true
+        },
+        {
+          "domain": "end_encounter",
+          "icc2_1": NaN,
+          "icc2_k": NaN,
+          "degenerate": true
         }
       ]
     }
@@ -100,18 +145,30 @@
   "deltas": [
     {
       "cloud_provider": "deepseek-v4-pro",
-      "delta_overall": -0.12297847114151966,
+      "delta_overall": -0.13724068609471612,
       "delta_by_domain": {
         "set_the_stage": -0.0009319953297841077,
-        "elicit_information": 0.0008785594417138887,
-        "give_information": -0.33943333323847225,
+        "elicit_information": -0.06984484186833284,
+        "give_information": -0.209402901883652,
+        "understand_perspective": NaN,
+        "end_encounter": NaN
+      }
+    },
+    {
+      "cloud_provider": "claude-opus-4-7",
+      "delta_overall": -0.27367615935245265,
+      "delta_by_domain": {
+        "set_the_stage": 0.19214625746359876,
+        "elicit_information": -0.027682565365784395,
+        "give_information": -0.4126430646152933,
         "understand_perspective": NaN,
         "end_encounter": NaN
       }
     }
   ],
   "requested_providers": [
-    "deepseek-v4-pro"
+    "deepseek-v4-pro",
+    "claude-opus-4-7"
   ],
   "skipped_providers": []
 }
