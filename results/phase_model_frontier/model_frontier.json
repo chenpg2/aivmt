@@ -1,0 +1,172 @@
+[
+  {
+    "model_tag": "qwen2.5:3b",
+    "label": "3B-Qwen",
+    "seed": 42,
+    "n_transcripts": 30,
+    "variant": "zero_shot",
+    "validity": {
+      "icc2_1": 0.2483942061278967,
+      "icc2_k": 0.3979419399875827,
+      "n_scored": 30,
+      "parse_success_rate": 1.0,
+      "refusal_rate": 0.0,
+      "degenerate": false
+    },
+    "latency": {
+      "n": 30,
+      "median_s": 2.1775,
+      "p90_s": 2.8863,
+      "mean_s": 2.275,
+      "tokens_per_s": null
+    },
+    "memory": {
+      "model_tag": "qwen2.5:3b",
+      "size_bytes": 3400000000,
+      "size_display": "3.4 GB",
+      "processor": "100% GPU",
+      "context": 32768
+    },
+    "disk": {
+      "model_tag": "qwen2.5:3b",
+      "size_bytes": 1900000000,
+      "size_display": "1.9 GB"
+    }
+  },
+  {
+    "model_tag": "qwen2.5:7b",
+    "label": "7B-Qwen",
+    "seed": 42,
+    "n_transcripts": 30,
+    "variant": "zero_shot",
+    "validity": {
+      "icc2_1": 0.35096453308932196,
+      "icc2_k": 0.5195762353386921,
+      "n_scored": 30,
+      "parse_success_rate": 1.0,
+      "refusal_rate": 0.0,
+      "degenerate": false
+    },
+    "latency": {
+      "n": 30,
+      "median_s": 5.6294,
+      "p90_s": 8.9025,
+      "mean_s": 6.0957,
+      "tokens_per_s": null
+    },
+    "memory": {
+      "model_tag": "qwen2.5:7b",
+      "size_bytes": 6600000000,
+      "size_display": "6.6 GB",
+      "processor": "100% GPU",
+      "context": 32768
+    },
+    "disk": {
+      "model_tag": "qwen2.5:7b",
+      "size_bytes": 4700000000,
+      "size_display": "4.7 GB"
+    }
+  },
+  {
+    "model_tag": "llama3.1:8b",
+    "label": "8B-Llama",
+    "seed": 42,
+    "n_transcripts": 30,
+    "variant": "zero_shot",
+    "validity": {
+      "icc2_1": 0.42411990939690697,
+      "icc2_k": 0.5956238749256939,
+      "n_scored": 30,
+      "parse_success_rate": 1.0,
+      "refusal_rate": 0.0,
+      "degenerate": false
+    },
+    "latency": {
+      "n": 30,
+      "median_s": 7.2225,
+      "p90_s": 9.8102,
+      "mean_s": 7.6475,
+      "tokens_per_s": null
+    },
+    "memory": {
+      "model_tag": "llama3.1:8b",
+      "size_bytes": 22000000000,
+      "size_display": "22 GB",
+      "processor": "100% GPU",
+      "context": 131072
+    },
+    "disk": {
+      "model_tag": "llama3.1:8b",
+      "size_bytes": 4900000000,
+      "size_display": "4.9 GB"
+    }
+  },
+  {
+    "model_tag": "huatuogpt-o1:8b",
+    "label": "8B-Huatuo-Med",
+    "seed": 42,
+    "n_transcripts": 30,
+    "variant": "zero_shot",
+    "validity": {
+      "icc2_1": 0.5537766010276454,
+      "icc2_k": 0.7128136704612305,
+      "n_scored": 30,
+      "parse_success_rate": 1.0,
+      "refusal_rate": 0.0,
+      "degenerate": false
+    },
+    "latency": {
+      "n": 30,
+      "median_s": 9.2844,
+      "p90_s": 11.4366,
+      "mean_s": 9.1821,
+      "tokens_per_s": null
+    },
+    "memory": {
+      "model_tag": "huatuogpt-o1:8b",
+      "size_bytes": 23000000000,
+      "size_display": "23 GB",
+      "processor": "100% GPU",
+      "context": 131072
+    },
+    "disk": {
+      "model_tag": "huatuogpt-o1:8b",
+      "size_bytes": 4900000000,
+      "size_display": "4.9 GB"
+    }
+  },
+  {
+    "model_tag": "qwen2.5:14b",
+    "label": "14B-Qwen",
+    "seed": 42,
+    "n_transcripts": 30,
+    "variant": "zero_shot",
+    "validity": {
+      "icc2_1": 0.6241486965828701,
+      "icc2_k": 0.768585657084291,
+      "n_scored": 30,
+      "parse_success_rate": 1.0,
+      "refusal_rate": 0.0,
+      "degenerate": false
+    },
+    "latency": {
+      "n": 30,
+      "median_s": 11.687,
+      "p90_s": 16.3452,
+      "mean_s": 12.3078,
+      "tokens_per_s": null
+    },
+    "memory": {
+      "model_tag": "qwen2.5:14b",
+      "size_bytes": 15000000000,
+      "size_display": "15 GB",
+      "processor": "100% GPU",
+      "context": 32768
+    },
+    "disk": {
+      "model_tag": "qwen2.5:14b",
+      "size_bytes": 9000000000,
+      "size_display": "9.0 GB"
+    }
+  }
+]
