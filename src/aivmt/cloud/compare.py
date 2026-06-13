@@ -161,10 +161,19 @@ def compare_local_vs_cloud(
 
     cloud_cells: list[ProviderCell] = []
     deltas: list[LocalVsCloudDelta] = []
+    failed: list[str] = []
     for provider_name, model_id, client in cloud:
-        cell = score_provider_cell(
-            provider_name, "cloud", model_id, case, safe, client, seed=seed, variant=variant
-        )
+        # Per-provider isolation: a flaky aggregator proxy that errors out (timeout, 5xx, refusal
+        # storm) after the client's own retries must NOT lose the providers that already scored. The
+        # failed provider is recorded as skipped so a multi-cloud panel degrades gracefully.
+        try:
+            cell = score_provider_cell(
+                provider_name, "cloud", model_id, case, safe, client, seed=seed, variant=variant
+            )
+        except Exception as exc:  # noqa: BLE001 — isolate one provider's failure from the panel
+            logger.error("cloud provider %s failed, recording as skipped: %s", provider_name, exc)
+            failed.append(provider_name)
+            continue
         cloud_cells.append(cell)
         deltas.append(
             LocalVsCloudDelta(
@@ -179,11 +188,11 @@ def compare_local_vs_cloud(
 
     scored_names = tuple(c.provider for c in cloud_cells)
     requested = tuple(requested_providers) if requested_providers is not None else scored_names
-    if skipped_providers is not None:
-        skipped = tuple(skipped_providers)
-    else:
-        # Infer skipped = requested minus scored, preserving the requested order.
-        skipped = tuple(name for name in requested if name not in set(scored_names))
+    base_skipped = tuple(skipped_providers) if skipped_providers is not None else tuple(
+        name for name in requested if name not in set(scored_names)
+    )
+    # Merge runtime failures into the skipped set (preserve order, dedup).
+    skipped = tuple(dict.fromkeys((*base_skipped, *failed)))
 
     return LocalVsCloudComparison(
         local_model=local_model,
