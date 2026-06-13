@@ -1,0 +1,76 @@
+/* AIVMT 病历录入门户 — 本地静态样式(无 CDN、无构建步骤) */
+* { box-sizing: border-box; }
+body {
+  margin: 0; color: #1c2733; background: #f4f6f8;
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  font-size: 14px; line-height: 1.55;
+}
+header { background: #134e6f; color: #fff; padding: 14px 22px; }
+header h1 { margin: 0; font-size: 19px; }
+header .sub { margin: 6px 0 0; font-size: 13px; opacity: .92; }
+header strong { color: #ffd97a; }
+
+.layout { display: flex; gap: 16px; padding: 16px 22px; align-items: flex-start; }
+aside#sidebar {
+  flex: 0 0 250px; background: #fff; border: 1px solid #d8dee5; border-radius: 8px; padding: 12px;
+  position: sticky; top: 12px;
+}
+.side-head { display: flex; justify-content: space-between; align-items: center; }
+.side-head h2 { margin: 0; font-size: 15px; }
+#case-list { list-style: none; margin: 10px 0; padding: 0; max-height: 50vh; overflow: auto; }
+#case-list li { padding: 7px 8px; border-radius: 6px; cursor: pointer; border: 1px solid transparent; }
+#case-list li:hover { background: #eef4f8; }
+#case-list li.active { background: #e2eef6; border-color: #9cc1d8; }
+#case-list .cid { font-weight: 600; display: block; }
+#case-list .ctitle { color: #51616f; font-size: 12px; display: block; }
+.badge { display: inline-block; font-size: 11px; border-radius: 9px; padding: 0 7px; margin-top: 3px; }
+.badge.err { background: #fde2e2; color: #a02525; }
+.badge.warn { background: #fdf3d7; color: #8a6410; }
+.badge.ok { background: #def4e3; color: #19713a; }
+.muted { color: #8a97a3; }
+
+main { flex: 1; min-width: 0; }
+fieldset { background: #fff; border: 1px solid #d8dee5; border-radius: 8px; margin: 0 0 14px; padding: 12px 14px; }
+legend { font-weight: 700; padding: 0 6px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
+label { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: #34424f; }
+label.inline { flex-direction: row; align-items: center; gap: 6px; }
+input, select, textarea {
+  font: inherit; padding: 6px 8px; border: 1px solid #c4ced7; border-radius: 6px; background: #fff;
+}
+input:focus, select:focus, textarea:focus { outline: 2px solid #9cc1d8; }
+textarea { resize: vertical; }
+.req { color: #c0392b; }
+.hint { color: #6a7884; font-size: 12px; margin: 2px 0 8px; }
+.hint.important { color: #8a6410; background: #fdf3d7; padding: 6px 8px; border-radius: 6px; }
+
+.rows .row {
+  display: grid; gap: 8px; margin-bottom: 8px; padding: 8px; border: 1px dashed #c4ced7; border-radius: 6px;
+  grid-template-columns: 110px 1fr 1fr 30px; align-items: start;
+}
+.rows .row textarea { min-height: 34px; }
+.rows .row .del {
+  border: none; background: #fde2e2; color: #a02525; border-radius: 6px; cursor: pointer; height: 30px;
+}
+button { font: inherit; padding: 7px 14px; border-radius: 6px; border: 1px solid #b9c4cd; background: #fff; cursor: pointer; }
+button:hover { background: #eef4f8; }
+button.primary { background: #134e6f; border-color: #134e6f; color: #fff; }
+button.primary:hover { background: #0e3d57; }
+button.add { font-size: 13px; }
+.actions { display: flex; gap: 10px; align-items: center; padding: 4px 0 30px; }
+
+.tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+.tabs .tab { border-radius: 6px 6px 0 0; border-bottom: 2px solid transparent; }
+.tabs .tab.active { background: #fff; border-bottom: 2px solid #134e6f; font-weight: 700; }
+.tabs.small .tab { padding: 4px 10px; font-size: 13px; }
+.hidden { display: none; }
+.preview {
+  background: #102331; color: #d8e7f2; padding: 14px; border-radius: 8px;
+  white-space: pre-wrap; word-break: break-word; font-size: 13px;
+}
+
+#messages .box { border-radius: 8px; padding: 10px 12px; margin-bottom: 12px; }
+#messages .box.err { background: #fde2e2; color: #7e1d1d; border: 1px solid #f3b8b8; }
+#messages .box.warn { background: #fdf3d7; color: #6e500c; border: 1px solid #ecd79a; }
+#messages .box.ok { background: #def4e3; color: #14542b; border: 1px solid #abdcb9; }
+#messages ul { margin: 4px 0 0; padding-left: 20px; }

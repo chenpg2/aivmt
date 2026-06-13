@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AIVMT 病历录入门户</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <h1>AIVMT 标准化病人 — 病历录入</h1>
+  <p class="sub">教师专用:填写表单即可新建或修改病例,无需接触配置文件。<strong>留空的选填字段将自动标记为 TODO_COLLAB(待补充),不会臆造任何临床内容。</strong></p>
+</header>
+
+<div class="layout">
+  <aside id="sidebar">
+    <div class="side-head">
+      <h2>已有病例</h2>
+      <button id="btn-refresh" type="button" title="刷新列表">刷新</button>
+    </div>
+    <ul id="case-list"><li class="muted">加载中…</li></ul>
+    <button id="btn-new" type="button" class="primary">＋ 新建病例</button>
+  </aside>
+
+  <main>
+    <nav class="tabs">
+      <button id="tab-form" class="tab active" type="button">病历表单</button>
+      <button id="tab-preview" class="tab" type="button">难度预览</button>
+    </nav>
+
+    <div id="messages"></div>
+
+    <form id="case-form" autocomplete="off">
+      <fieldset>
+        <legend>基本信息</legend>
+        <div class="grid">
+          <label>病例编号 <span class="req">*</span><input id="f-case_id" placeholder="如 obgyn_aub_zh_02(小写字母/数字/下划线)"></label>
+          <label>版本号<input id="f-version" placeholder="默认 1.0.0"></label>
+          <label>病例标题 <span class="req">*</span><input id="f-title" placeholder="如 月经量增多伴经期延长"></label>
+          <label>语言 <span class="req">*</span>
+            <select id="f-language"><option value="zh">中文 (zh)</option><option value="en">英文 (en)</option></select>
+          </label>
+          <label>专科 <span class="req">*</span><input id="f-specialty" value="obgyn" placeholder="如 obgyn"></label>
+          <label>临床复杂度
+            <select id="f-difficulty">
+              <option value="simple">简单 (simple)</option>
+              <option value="moderate" selected>中等 (moderate)</option>
+              <option value="complex">复杂 (complex)</option>
+            </select>
+          </label>
+          <label>年龄 <span class="req">*</span><input id="f-age" placeholder="如 28"></label>
+          <label>性别 <span class="req">*</span>
+            <select id="f-sex"><option value="">请选择</option><option value="female">女</option><option value="male">男</option></select>
+          </label>
+          <label>职业<input id="f-occupation"></label>
+          <label>婚姻/婚育状况<input id="f-marital_status"></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>主诉</legend>
+        <label>病人来就诊的最主要不适(开场只说这一句)<input id="f-chief_complaint" placeholder="如 今天右下腹隐痛加重一天"></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>现病史(结构化 HPI)</legend>
+        <p class="hint">留空将标记为 TODO_COLLAB 待补。</p>
+        <div class="grid">
+          <label>起病<input id="f-hpi-onset"></label>
+          <label>部位<input id="f-hpi-location"></label>
+          <label>持续时间<input id="f-hpi-duration"></label>
+          <label>性质<input id="f-hpi-character"></label>
+          <label>加重因素<input id="f-hpi-aggravating"></label>
+          <label>缓解因素<input id="f-hpi-relieving"></label>
+          <label>时间规律<input id="f-hpi-timing"></label>
+          <label>严重程度<input id="f-hpi-severity"></label>
+        </div>
+        <label>伴随症状(每行一条)<textarea id="f-hpi-associated_symptoms" rows="2"></textarea></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>既往史 / 用药 / 过敏 / 家族史 / 社会史</legend>
+        <p class="hint">每行一条。留空将标记为 TODO_COLLAB 待补;如确认没有,请明确写"无"。</p>
+        <div class="grid">
+          <label>既往史<textarea id="f-pmh" rows="2"></textarea></label>
+          <label>目前用药<textarea id="f-medications" rows="2"></textarea></label>
+          <label>过敏史<textarea id="f-allergies" rows="2"></textarea></label>
+          <label>家族史<textarea id="f-family_history" rows="2"></textarea></label>
+          <label>个人/社会史<textarea id="f-social_history" rows="2"></textarea></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>相关阴性体征(pertinent negatives)</legend>
+        <p class="hint">病人被问到时必须如实回答的阴性发现,每行一条,如"没有发热""白带正常"。</p>
+        <label><textarea id="f-pertinent_negatives" rows="2"></textarea></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>妇产科专项(仅妇产科病例需要)</legend>
+        <p class="hint">专科为 obgyn 时本块会写入病例;留空字段标记为 TODO_COLLAB 待补。</p>
+        <div class="grid">
+          <label>末次月经<input id="f-obgyn-lmp"></label>
+          <label>月经史<input id="f-obgyn-menstrual_history"></label>
+          <label>孕产史<input id="f-obgyn-obstetric_history"></label>
+          <label>避孕方式<input id="f-obgyn-contraception"></label>
+          <label>性生活史<input id="f-obgyn-sexual_history"></label>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>隐藏信息(hidden info)</legend>
+        <p class="hint important">这些信息<strong>只有当学生明确问到对应触发问题时</strong>,标准化病人才会透露;开场和一般背景中绝不出现。触发条件必填。</p>
+        <div id="rows-hidden_info" class="rows"></div>
+        <button type="button" class="add" data-add="hidden_info">＋ 添加一条隐藏信息</button>
+      </fieldset>
+
+      <fieldset>
+        <legend>干扰项(red herrings)</legend>
+        <p class="hint">与主要问题无关、但可能分散学生注意力的良性信息;仅在"困难"难度下激活。</p>
+        <div id="rows-red_herrings" class="rows"></div>
+        <button type="button" class="add" data-add="red_herrings">＋ 添加一条干扰项</button>
+      </fieldset>
+
+      <fieldset>
+        <legend>评分清单(history checklist)<span class="req">*</span></legend>
+        <p class="hint">学生应当问到的要点,逐条列出;权重默认 1.0。至少一条。</p>
+        <div id="rows-history_checklist" class="rows"></div>
+        <button type="button" class="add" data-add="history_checklist">＋ 添加一条评分项</button>
+      </fieldset>
+
+      <fieldset>
+        <legend>情绪与披露风格</legend>
+        <div class="grid">
+          <label>情绪状态<input id="f-emotional_state" placeholder="如 口语化、简短,略带紧张和担忧。"></label>
+          <label>披露风格<input id="f-disclosure_profile" placeholder="如 只回答被直接问到的内容,绝不主动透露。"></label>
+        </div>
+        <label>人物设定自由文本(persona,选填;留空标记 TODO_COLLAB)<textarea id="f-persona" rows="4"></textarea></label>
+      </fieldset>
+
+      <div class="actions">
+        <button id="btn-validate" type="button">校验(不保存)</button>
+        <button id="btn-save" type="button" class="primary">保存病例</button>
+        <label class="inline"><input type="checkbox" id="f-overwrite"> 覆盖已有病例</label>
+      </div>
+    </form>
+
+    <section id="preview-panel" class="hidden">
+      <p class="hint">下方为三个行为难度编译出的标准化病人系统提示词(确定性编译,不调用任何大模型)。</p>
+      <button id="btn-preview" type="button" class="primary">用当前表单生成预览</button>
+      <nav class="tabs small">
+        <button class="tab ptab active" data-diff="easy" type="button">简单 easy</button>
+        <button class="tab ptab" data-diff="standard" type="button">标准 standard</button>
+        <button class="tab ptab" data-diff="hard" type="button">困难 hard</button>
+      </nav>
+      <pre id="preview-text" class="preview">(尚未生成预览)</pre>
+    </section>
+  </main>
+</div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>
