@@ -1,0 +1,10 @@
+# Cloud comparator for the local-vs-cloud non-inferiority head-to-head (OpenAI-compatible endpoint).
+# AMTES/Liu 2025 (JMIR Med Educ e73419) used DeepSeek-V2.5 — this is the #1 scoop comparator.
+# The API key is read from the ENV VAR NAMED below at run time; the VALUE is NEVER stored here or
+# committed (the runner reuses aivmt.llm.openai_compat.OpenAICompatClient with base_url+key+model).
+name: openai_compat
+provider: deepseek
+model_id: deepseek-chat          # DeepSeek-V3
+base_url: https://api.deepseek.com/v1
+env_key_name: DEEPSEEK_API_KEY   # NAME of the env var holding the key — not the key itself
+temperature: 0.0

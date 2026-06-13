@@ -6,3 +6,4 @@
 | phase_robustness | status=COMPUTED; artifact=robustness.json |
 | phase_asr_robustness | status=COMPUTED; artifact=asr_robustness.json |
 | phase_quant_frontier | status=COMPUTED; artifact=quant_frontier.json |
+| phase_local_vs_cloud | status=PENDING_REAL_DATA; ni_margin=0.1; fixture_true_icc=0.986; fixture_shuffled_icc=-0.043 |

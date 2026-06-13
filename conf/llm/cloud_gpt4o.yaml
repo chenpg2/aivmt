@@ -1,0 +1,11 @@
+# Cloud comparator for the local-vs-cloud non-inferiority head-to-head (OpenAI-compatible endpoint).
+# ECOSBot (CKJ 2025) reported GPT-4o's communication-subdomain ICC collapsing to 0.31-0.44 — this
+# comparator anchors the DOMAIN-LEVEL deltas (the lane reports per-SEGUE-domain ICC, not just overall).
+# The API key is read from the ENV VAR NAMED below at run time; the VALUE is NEVER stored here or
+# committed (the runner reuses aivmt.llm.openai_compat.OpenAICompatClient with base_url+key+model).
+name: openai_compat
+provider: gpt-4o
+model_id: gpt-4o
+base_url: https://api.openai.com/v1
+env_key_name: OPENAI_API_KEY     # NAME of the env var holding the key — not the key itself
+temperature: 0.0

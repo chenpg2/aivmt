@@ -288,3 +288,66 @@ class PhaseQuantFrontier(Phase):
             lambda: check_shuffled_gold_collapses_icc(seed=self.seed),
             lambda: check_degenerate_cell_is_nan_not_silent(seed=self.seed),
         ]
+
+
+@register_phase("phase_local_vs_cloud")
+class PhaseLocalVsCloud(Phase):
+    """Scoop defense: local-vs-cloud scoring head-to-head with pre-registered non-inferiority.
+
+    AMTES/Liu 2025 reported ICC 0.92-0.98 for history-taking scoring on CLOUD models; our wedge is the
+    first faculty-valid scoring on a LOCAL open model. This phase validates the head-to-head artifact
+    (the SAME scorers / prompts / synthetic transcripts run through the local model AND each cloud
+    comparator) and pre-registers the non-inferiority test (local vs cloud, margin delta = 0.10 per
+    HYPOTHESIS.md) overall AND per SEGUE domain (ECOSBot showed cloud communication-subdomain ICC
+    collapses to 0.31-0.44).
+
+    Real numbers come from the batch runner (``scripts/local_vs_cloud.py``), which requires at least
+    one cloud API key and writes the artifact this phase validates. Until that batch runs the phase
+    reports a seeded fixture cross-check (true-vs-shuffled-gold overall ICC) so the evidence table is
+    populated reproducibly and the negative controls — including the structural PHI guard — still fire.
+
+    PHI: no real data is ever transmitted. The contract refuses any artifact whose provenance is not
+    off-device safe, and the PHI-guard negative control proves a real-data path is hard-refused.
+    """
+
+    inputs = [PROJECT_ROOT / "results" / "phase_local_vs_cloud" / "local_vs_cloud.json"]
+    outputs = [PROJECT_ROOT / "results" / "phase_local_vs_cloud" / "local_vs_cloud.json"]
+    seed = SEED
+
+    def run(self) -> dict:
+        from harness.contracts.local_vs_cloud import check_local_vs_cloud_inputs
+
+        check_local_vs_cloud_inputs(self.inputs[0])
+        import json
+
+        return {"comparison": json.loads(Path(self.inputs[0]).read_text(encoding="utf-8"))}
+
+    def benchmark(self) -> dict:
+        from harness.sanity.local_vs_cloud import check_shuffled_gold_collapses_icc
+
+        if self.inputs_exist():
+            from harness.contracts.local_vs_cloud import check_local_vs_cloud_inputs
+
+            check_local_vs_cloud_inputs(self.inputs[0])
+            return {"status": "COMPUTED", "artifact": str(self.inputs[0].name)}
+
+        m = check_shuffled_gold_collapses_icc(seed=self.seed)
+        return {
+            "status": "PENDING_REAL_DATA",
+            "ni_margin": 0.10,
+            "fixture_true_icc": round(m["true_icc"], 3),
+            "fixture_shuffled_icc": round(m["shuffled_icc"], 3),
+        }
+
+    def sanity(self) -> List[Callable[[], dict]]:
+        from harness.sanity.local_vs_cloud import (
+            check_degenerate_cell_is_nan_not_silent,
+            check_phi_guard_blocks_real_data_path,
+            check_shuffled_gold_collapses_icc,
+        )
+
+        return [
+            lambda: check_shuffled_gold_collapses_icc(seed=self.seed),
+            lambda: check_degenerate_cell_is_nan_not_silent(seed=self.seed),
+            lambda: check_phi_guard_blocks_real_data_path(seed=self.seed),
+        ]
