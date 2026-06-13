@@ -234,3 +234,57 @@ class PhaseAsrRobustness(Phase):
             lambda: check_scramble_collapses_icc(seed=self.seed),
             lambda: check_degenerate_curve_point_is_nan_not_silent(seed=self.seed),
         ]
+
+
+@register_phase("phase_quant_frontier")
+class PhaseQuantFrontier(Phase):
+    """SQ3 edge-deployability: the validity-cost frontier over (model size x quant level).
+
+    Answers "how small/cheap a model still scores at acceptable validity?" — per cell, ICC-vs-gold
+    over the SAME designed synthetic golded set the robustness lane uses (so the lanes are directly
+    comparable), plus JSON-parse/refusal robustness, per-encounter latency, loaded RAM/VRAM
+    (``ollama ps``), and on-disk size (``ollama list``). Real numbers come from the batch runner
+    (``scripts/quant_frontier.py``) which writes the artifact this phase validates and summarizes.
+    Until that batch runs against the quant ladder the phase reports a seeded fixture cross-check
+    (true-vs-shuffled-gold ICC) so the evidence table is populated reproducibly and the negative
+    controls still fire.
+    """
+
+    inputs = [PROJECT_ROOT / "results" / "phase_quant_frontier" / "quant_frontier.json"]
+    outputs = [PROJECT_ROOT / "results" / "phase_quant_frontier" / "quant_frontier.json"]
+    seed = SEED
+
+    def run(self) -> dict:
+        from harness.contracts.quant_frontier import check_quant_frontier_inputs
+
+        check_quant_frontier_inputs(self.inputs[0])
+        import json
+
+        return {"cells": json.loads(Path(self.inputs[0]).read_text(encoding="utf-8"))}
+
+    def benchmark(self) -> dict:
+        from harness.sanity.quant_frontier import check_shuffled_gold_collapses_icc
+
+        if self.inputs_exist():
+            from harness.contracts.quant_frontier import check_quant_frontier_inputs
+
+            check_quant_frontier_inputs(self.inputs[0])
+            return {"status": "COMPUTED", "artifact": str(self.inputs[0].name)}
+
+        m = check_shuffled_gold_collapses_icc(seed=self.seed)
+        return {
+            "status": "PENDING_REAL_DATA",
+            "fixture_true_icc": round(m["true_icc"], 3),
+            "fixture_shuffled_icc": round(m["shuffled_icc"], 3),
+        }
+
+    def sanity(self) -> List[Callable[[], dict]]:
+        from harness.sanity.quant_frontier import (
+            check_degenerate_cell_is_nan_not_silent,
+            check_shuffled_gold_collapses_icc,
+        )
+
+        return [
+            lambda: check_shuffled_gold_collapses_icc(seed=self.seed),
+            lambda: check_degenerate_cell_is_nan_not_silent(seed=self.seed),
+        ]
