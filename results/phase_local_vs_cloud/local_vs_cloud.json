@@ -1,0 +1,117 @@
+{
+  "local_model": "llama3.1:8b",
+  "seed": 42,
+  "n_transcripts": 30,
+  "variant": "zero_shot",
+  "provenance": "synthetic",
+  "non_inferiority_margin": 0.1,
+  "local": {
+    "provider": "llama3.1:8b",
+    "role": "local",
+    "model_id": "llama3.1:8b",
+    "seed": 42,
+    "n_transcripts": 30,
+    "variant": "zero_shot",
+    "overall_icc2_1": 0.42411990939690697,
+    "overall_icc2_k": 0.5956238749256939,
+    "overall_degenerate": false,
+    "parse_success_rate": 1.0,
+    "refusal_rate": 0.0,
+    "domains": [
+      {
+        "domain": "set_the_stage",
+        "icc2_1": 0.48344755897743114,
+        "icc2_k": 0.6517892136486183,
+        "degenerate": false
+      },
+      {
+        "domain": "elicit_information",
+        "icc2_1": 0.6361610549772583,
+        "icc2_k": 0.7776264482546316,
+        "degenerate": false
+      },
+      {
+        "domain": "give_information",
+        "icc2_1": 0.11362908221021337,
+        "icc2_k": 0.2040698901014589,
+        "degenerate": false
+      },
+      {
+        "domain": "understand_perspective",
+        "icc2_1": NaN,
+        "icc2_k": NaN,
+        "degenerate": true
+      },
+      {
+        "domain": "end_encounter",
+        "icc2_1": NaN,
+        "icc2_k": NaN,
+        "degenerate": true
+      }
+    ]
+  },
+  "cloud": [
+    {
+      "provider": "deepseek-v4-pro",
+      "role": "cloud",
+      "model_id": "deepseek-v4-pro",
+      "seed": 42,
+      "n_transcripts": 30,
+      "variant": "zero_shot",
+      "overall_icc2_1": 0.5470983805384266,
+      "overall_icc2_k": 0.7072573889554761,
+      "overall_degenerate": false,
+      "parse_success_rate": 1.0,
+      "refusal_rate": 0.0,
+      "domains": [
+        {
+          "domain": "set_the_stage",
+          "icc2_1": 0.48437955430721524,
+          "icc2_k": 0.6526357128831289,
+          "degenerate": false
+        },
+        {
+          "domain": "elicit_information",
+          "icc2_1": 0.6352824955355444,
+          "icc2_k": 0.7769697251330187,
+          "degenerate": false
+        },
+        {
+          "domain": "give_information",
+          "icc2_1": 0.45306241544868564,
+          "icc2_k": 0.6235966337465086,
+          "degenerate": false
+        },
+        {
+          "domain": "understand_perspective",
+          "icc2_1": NaN,
+          "icc2_k": NaN,
+          "degenerate": true
+        },
+        {
+          "domain": "end_encounter",
+          "icc2_1": 0.09729363588780447,
+          "icc2_k": 0.17733381969191062,
+          "degenerate": false
+        }
+      ]
+    }
+  ],
+  "deltas": [
+    {
+      "cloud_provider": "deepseek-v4-pro",
+      "delta_overall": -0.12297847114151966,
+      "delta_by_domain": {
+        "set_the_stage": -0.0009319953297841077,
+        "elicit_information": 0.0008785594417138887,
+        "give_information": -0.33943333323847225,
+        "understand_perspective": NaN,
+        "end_encounter": NaN
+      }
+    }
+  ],
+  "requested_providers": [
+    "deepseek-v4-pro"
+  ],
+  "skipped_providers": []
+}

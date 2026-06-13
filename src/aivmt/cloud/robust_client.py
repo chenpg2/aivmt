@@ -72,6 +72,8 @@ class RobustCloudClient(BaseLLMClient):
         api_key: str,
         temperature: float = 0.0,
         max_tokens: int = 4096,
+        timeout: float = 180.0,
+        max_retries: int = 3,
     ) -> None:
         self.model_id = model_id
         self._base_url = base_url
@@ -80,6 +82,10 @@ class RobustCloudClient(BaseLLMClient):
         #: Reasoning models spend tokens on chain-of-thought before the JSON; budget generously so
         #: the answer is never truncated away (an empty-content refusal would otherwise be spurious).
         self._max_tokens = max_tokens
+        #: Aggregator proxies are slow/flaky; a generous per-request timeout + SDK-level retries with
+        #: backoff keep one slow encounter from crashing a 30-transcript head-to-head batch.
+        self._timeout = timeout
+        self._max_retries = max_retries
         self.n_calls = 0
         self.n_parse_failures = 0
         self.n_refusals = 0
@@ -92,7 +98,12 @@ class RobustCloudClient(BaseLLMClient):
             raise ImportError("openai required; install with: uv sync --extra serve") from exc
 
         self.n_calls += 1
-        client = OpenAI(base_url=self._base_url, api_key=self._api_key)
+        client = OpenAI(
+            base_url=self._base_url,
+            api_key=self._api_key,
+            timeout=self._timeout,
+            max_retries=self._max_retries,
+        )
         resp = client.chat.completions.create(
             model=self.model_id,
             messages=[
