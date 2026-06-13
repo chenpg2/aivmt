@@ -132,11 +132,22 @@ def main() -> None:
         help="pre-registered non-inferiority margin (default 0.10 per HYPOTHESIS.md)",
     )
     parser.add_argument("--case", default=str(ROOT / "conf" / "case" / "example_chestpain_en.yaml"))
+    parser.add_argument(
+        "--env-file", default=None,
+        help="path to a .env using the generic M{n}_API_KEY/M{n}_MODEL_ID/M{n}_ENDPOINT scheme; "
+        "each complete slot is registered as a provider named after its model id",
+    )
     parser.add_argument("--mock", action="store_true", help="use the deterministic mock LLM (offline)")
     args = parser.parse_args()
 
     if args.transcripts < 2:
         parser.error("--transcripts must be >= 2 (ICC requires n>=2 targets)")
+
+    if args.env_file and not args.mock:
+        from aivmt.cloud.mslot import load_mslot_providers
+
+        registered = load_mslot_providers(Path(args.env_file))
+        logger.info("loaded %d M-slot cloud provider(s) from %s", len(registered), args.env_file)
 
     seed = load_seed()
     case = load_case(Path(args.case))

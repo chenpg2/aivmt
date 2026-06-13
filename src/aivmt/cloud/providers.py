@@ -95,13 +95,16 @@ def build_cloud_client(provider: CloudProvider, *, temperature: float = 0.0) -> 
             f"cloud provider {provider.name!r} requires env var {provider.env_key_name} to be set "
             "(see .env.example); it is unset. Export the key, or omit this provider from --providers."
         )
-    from ..llm.openai_compat import OpenAICompatClient  # noqa: PLC0415
+    from .robust_client import RobustCloudClient  # noqa: PLC0415
 
     logger.info(
         "built cloud client: provider=%s base_url=%s model=%s (key from $%s)",
         provider.name, provider.base_url, provider.model_id, provider.env_key_name,
     )
-    return OpenAICompatClient(
+    # Cloud comparators use the reasoning-tolerant client (no response_format dependency; strips
+    # <think> blocks; generous max_tokens) because the aggregator/reasoning endpoints break the stock
+    # client. The local model keeps using OpenAICompatClient, so the local scoring path is unchanged.
+    return RobustCloudClient(
         model_id=provider.model_id,
         base_url=provider.base_url,
         api_key=key,
