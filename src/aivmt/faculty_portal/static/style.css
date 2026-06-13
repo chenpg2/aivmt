@@ -1,0 +1,77 @@
+/* AIVMT 教师评分门户 — 本地静态样式(无 CDN、无构建步骤) */
+* { box-sizing: border-box; }
+body {
+  margin: 0; color: #1c2733; background: #f4f6f8;
+  font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  font-size: 14px; line-height: 1.55;
+}
+header { background: #134e6f; color: #fff; padding: 14px 22px; }
+header h1 { margin: 0; font-size: 19px; }
+header .sub { margin: 6px 0 0; font-size: 13px; opacity: .94; max-width: 1000px; }
+header strong { color: #ffd97a; }
+code { background: rgba(0,0,0,.18); padding: 0 5px; border-radius: 4px; }
+
+.panel { background: #fff; border: 1px solid #d8dee5; border-radius: 8px; padding: 14px 16px; }
+.hidden { display: none; }
+.muted { color: #8a97a3; }
+.hint { color: #6a7884; font-size: 12px; margin: 2px 0 10px; }
+
+#login { margin: 20px 22px; max-width: 560px; }
+#login h2 { margin: 0 0 8px; font-size: 16px; }
+.login-row { display: flex; gap: 10px; }
+.login-row input { flex: 1; }
+input, textarea, select {
+  font: inherit; padding: 7px 9px; border: 1px solid #c4ced7; border-radius: 6px; background: #fff;
+}
+input:focus, textarea:focus { outline: 2px solid #9cc1d8; }
+textarea { resize: vertical; width: 100%; }
+button { font: inherit; padding: 7px 14px; border-radius: 6px; border: 1px solid #b9c4cd; background: #fff; cursor: pointer; }
+button:hover { background: #eef4f8; }
+button.primary { background: #134e6f; border-color: #134e6f; color: #fff; }
+button.primary:hover { background: #0e3d57; }
+button:disabled { opacity: .55; cursor: default; }
+
+.msg { margin-top: 10px; font-size: 13px; }
+.msg.err { color: #a02525; }
+
+/* 顶栏 + 进度条 */
+.topbar { display: flex; align-items: center; gap: 18px; padding: 12px 22px; background: #e9eff3; border-bottom: 1px solid #d8dee5; }
+.topbar .who { font-size: 13px; }
+.topbar .progress { flex: 1; display: flex; align-items: center; gap: 10px; }
+.bar { flex: 1; height: 10px; background: #cdd8e0; border-radius: 6px; overflow: hidden; max-width: 420px; }
+#bar-fill { height: 100%; width: 0; background: #2e8b57; transition: width .25s ease; }
+#progress-text { font-size: 13px; color: #34424f; white-space: nowrap; }
+
+.layout { display: flex; gap: 16px; padding: 16px 22px; align-items: flex-start; }
+.transcript-col { flex: 1; min-width: 0; }
+.form-col { flex: 0 0 400px; position: sticky; top: 12px; }
+.tcol-head { display: flex; justify-content: space-between; align-items: baseline; }
+.transcript-col h2, .form-col h2 { margin: 0 0 8px; font-size: 16px; }
+
+#transcript { display: flex; flex-direction: column; gap: 8px; max-height: 72vh; overflow: auto; padding-right: 4px; }
+.turn { padding: 8px 11px; border-radius: 10px; max-width: 88%; white-space: pre-wrap; word-break: break-word; }
+.turn .role { display: block; font-size: 11px; font-weight: 700; margin-bottom: 2px; opacity: .7; }
+.turn.student { align-self: flex-start; background: #eef4f8; border: 1px solid #d2e0ea; }
+.turn.patient { align-self: flex-end; background: #fdf3e7; border: 1px solid #f0dcc2; }
+
+/* 评分项 */
+.score-item { padding: 9px 0; border-bottom: 1px dashed #e0e6eb; }
+.score-item:last-child { border-bottom: none; }
+.score-item .si-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.score-item .si-name { font-weight: 600; font-size: 13px; }
+.score-item .si-anchor { color: #6a7884; font-size: 11px; margin: 2px 0 6px; }
+.score-item .si-controls { display: flex; align-items: center; gap: 10px; }
+.score-item input[type=range] { flex: 1; }
+.score-item input[type=number] { width: 76px; text-align: center; }
+.score-item.bad input[type=number] { border-color: #c0392b; background: #fde2e2; }
+
+.notes-label { display: block; margin-top: 12px; font-size: 13px; color: #34424f; }
+.submit-row { margin-top: 14px; }
+.submit-row button { width: 100%; }
+
+#messages .box { border-radius: 8px; padding: 10px 12px; margin: 10px 22px; }
+#messages .box.err { background: #fde2e2; color: #7e1d1d; border: 1px solid #f3b8b8; }
+#messages .box.ok { background: #def4e3; color: #14542b; border: 1px solid #abdcb9; }
+#messages ul { margin: 4px 0 0; padding-left: 20px; }
+
+#done-panel { margin: 20px 22px; }

@@ -1,0 +1,12 @@
+{
+  "encounter_id": "eval_obgyn_aub_zh_01_04",
+  "designed_quality": 0.9,
+  "covered_item_ids": [
+    "hx_menstrual_detail",
+    "hx_lmp",
+    "hx_onset",
+    "hx_anemia",
+    "hx_iud_contraception",
+    "hx_meds"
+  ]
+}

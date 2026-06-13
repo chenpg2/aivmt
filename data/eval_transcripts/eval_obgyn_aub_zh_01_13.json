@@ -1,0 +1,32 @@
+{
+  "encounter_id": "eval_obgyn_aub_zh_01_13",
+  "case_id": "obgyn_aub_zh_01",
+  "language": "zh",
+  "provenance": "synthetic",
+  "turns": [
+    {
+      "speaker": "student",
+      "text": "您今天哪里不舒服?(#42_13)"
+    },
+    {
+      "speaker": "patient",
+      "text": "近3个月月经量明显增多、有血块"
+    },
+    {
+      "speaker": "student",
+      "text": "请问您详细询问月经史(周期/经期天数/量/血块),能跟我说说吗?"
+    },
+    {
+      "speaker": "patient",
+      "text": "近3个月月经量明显增多、有血块,经期从5天拖长到8-10天,周期还算规律"
+    },
+    {
+      "speaker": "student",
+      "text": "请问您末次月经,能跟我说说吗?"
+    },
+    {
+      "speaker": "patient",
+      "text": "没有,不清楚。"
+    }
+  ]
+}

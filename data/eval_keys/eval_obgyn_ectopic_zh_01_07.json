@@ -1,0 +1,8 @@
+{
+  "encounter_id": "eval_obgyn_ectopic_zh_01_07",
+  "designed_quality": 0.25,
+  "covered_item_ids": [
+    "hx_lmp",
+    "hx_menstrual"
+  ]
+}

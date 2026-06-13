@@ -1,0 +1,14 @@
+{
+  "encounter_id": "eval_obgyn_ectopic_zh_01_11",
+  "designed_quality": 1.0,
+  "covered_item_ids": [
+    "hx_lmp",
+    "hx_menstrual",
+    "hx_bleeding",
+    "hx_pain",
+    "hx_sexual_contraception",
+    "hx_obstetric",
+    "hx_associated",
+    "hx_pid"
+  ]
+}

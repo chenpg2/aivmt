@@ -11,9 +11,16 @@ uv.lock
 # data / outputs (de-identified study data must NOT be committed)
 data/transcripts/
 data/encounters/
+# generated faculty-rating sheets (runtime artifact; the schema lives in code)
+data/faculty_rating_sheet.csv
+data/faculty_ratings.csv
 outputs/
 *.wav
 *.bin
+
+# NOTE: data/eval_transcripts/ is intentionally NOT ignored — it is SYNTHETIC,
+# case-grounded apparatus (provenance='synthetic') that is committed so the
+# path-A faculty-scoring set is reproducible and reviewable.
 
 # host test binary
 firmware/test_host/fsm_test

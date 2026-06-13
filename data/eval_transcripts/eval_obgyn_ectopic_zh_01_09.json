@@ -1,0 +1,72 @@
+{
+  "encounter_id": "eval_obgyn_ectopic_zh_01_09",
+  "case_id": "obgyn_ectopic_zh_01",
+  "language": "zh",
+  "provenance": "synthetic",
+  "turns": [
+    {
+      "speaker": "student",
+      "text": "您好,我是医学生,今天想了解一下您的情况,可以问您几个问题吗?"
+    },
+    {
+      "speaker": "student",
+      "text": "您今天哪里不舒服?(#42_09)"
+    },
+    {
+      "speaker": "patient",
+      "text": "今天右下腹隐痛加重一天"
+    },
+    {
+      "speaker": "student",
+      "text": "请问您末次月经/停经时间,能跟我说说吗?"
+    },
+    {
+      "speaker": "patient",
+      "text": "末次月经大约6周前;停经6周多"
+    },
+    {
+      "speaker": "student",
+      "text": "请问您平时月经史(周期/规律性),能跟我说说吗?"
+    },
+    {
+      "speaker": "patient",
+      "text": "平时月经规律,28-30天一次"
+    },
+    {
+      "speaker": "student",
+      "text": "请问您阴道流血的量、颜色、持续时间,能跟我说说吗?"
+    },
+    {
+      "speaker": "patient",
+      "text": "今天伴有少量暗红色阴道流血。"
+    },
+    {
+      "speaker": "student",
+      "text": "请问您腹痛部位、性质、加重情况,能跟我说说吗?"
+    },
+    {
+      "speaker": "patient",
+      "text": "隐痛"
+    },
+    {
+      "speaker": "student",
+      "text": "请问您性生活与避孕方式,能跟我说说吗?"
+    },
+    {
+      "speaker": "patient",
+      "text": "近期用避孕套,但偶尔没用"
+    },
+    {
+      "speaker": "student",
+      "text": "请说出您的鉴别诊断及理由,以及下一步建议的检查或处理。"
+    },
+    {
+      "speaker": "patient",
+      "text": "好的,谢谢您的耐心。"
+    },
+    {
+      "speaker": "student",
+      "text": "我大概了解了,稍后会跟上级医生讨论后再向您说明下一步,谢谢您的配合。"
+    }
+  ]
+}

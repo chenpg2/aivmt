@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AIVMT 教师评分门户</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <h1>AIVMT 标准化病人 — 教师评分</h1>
+  <p class="sub">请阅读下方<strong>问诊转写</strong>,并按 SEGUE 沟通要素与病史采集质量逐项打分。
+    评分为 <strong>0(完全未做到)到 1(完全做到)</strong> 之间的小数。
+    <strong>本页不会显示任何系统评分或参考答案,以保证盲评。</strong></p>
+</header>
+
+<!-- 第一步:输入评分者编号 -->
+<section id="login" class="panel">
+  <h2>开始评分</h2>
+  <p class="hint">请输入您的评分者编号(由项目组分配,如 <code>fac01</code>)。同一编号下已评过的转写不会重复出现。</p>
+  <div class="login-row">
+    <input id="rater-id" placeholder="评分者编号,如 fac01" autocomplete="off">
+    <button id="btn-start" type="button" class="primary">进入评分</button>
+  </div>
+  <div id="login-msg" class="msg"></div>
+</section>
+
+<!-- 第二步:逐条评分 -->
+<main id="workbench" class="hidden">
+  <div class="topbar">
+    <div class="who">评分者:<strong id="who-rater"></strong></div>
+    <div class="progress">
+      <div class="bar"><div id="bar-fill"></div></div>
+      <span id="progress-text">0 / 0</span>
+    </div>
+    <button id="btn-logout" type="button">切换评分者</button>
+  </div>
+
+  <div id="messages"></div>
+
+  <div id="done-panel" class="panel hidden">
+    <h2>本评分者已完成全部转写 ✅</h2>
+    <p class="hint">感谢!所有结果已逐条保存。可关闭页面,或点击上方“切换评分者”。</p>
+  </div>
+
+  <div id="score-panel" class="layout hidden">
+    <section class="transcript-col panel">
+      <div class="tcol-head">
+        <h2>问诊转写</h2>
+        <span class="muted" id="enc-meta"></span>
+      </div>
+      <div id="transcript"></div>
+    </section>
+
+    <aside class="form-col panel">
+      <h2>评分</h2>
+      <p class="hint">每项 0–1,可填小数(如 0.5)。锚点见各项说明。</p>
+      <div id="score-fields"></div>
+      <label class="notes-label">备注(选填,可写评分依据或观察)
+        <textarea id="f-notes" rows="3" placeholder="选填"></textarea>
+      </label>
+      <div class="submit-row">
+        <button id="btn-submit" type="button" class="primary">提交并进入下一条</button>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

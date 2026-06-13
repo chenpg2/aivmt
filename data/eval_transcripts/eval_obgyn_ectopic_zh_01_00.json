@@ -1,0 +1,16 @@
+{
+  "encounter_id": "eval_obgyn_ectopic_zh_01_00",
+  "case_id": "obgyn_ectopic_zh_01",
+  "language": "zh",
+  "provenance": "synthetic",
+  "turns": [
+    {
+      "speaker": "student",
+      "text": "您今天哪里不舒服?(#42_00)"
+    },
+    {
+      "speaker": "patient",
+      "text": "今天右下腹隐痛加重一天"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "encounter_id": "eval_obgyn_vaginitis_zh_01_02",
+  "designed_quality": 0.47857142857142854,
+  "covered_item_ids": [
+    "hx_discharge",
+    "hx_itching",
+    "hx_trigger"
+  ]
+}
