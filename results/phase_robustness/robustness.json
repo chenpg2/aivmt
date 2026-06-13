@@ -1,0 +1,92 @@
+[
+  {
+    "model_id": "llama3.1:8b",
+    "variant": "zero_shot",
+    "seed": 42,
+    "paraphrase": {
+      "variant": "zero_shot",
+      "n_paraphrases": 6,
+      "n_transcripts": 30,
+      "per_paraphrase_icc": {
+        "p0_identity": 0.42411990939690697,
+        "p1_careful": 0.5808645282958712,
+        "p2_concise": 0.4455307451359162,
+        "p3_neutral": 0.4398647428040045,
+        "p4_format": 0.42411990939690697,
+        "p5_evidence": 0.4618635527595066
+      },
+      "icc_mean": 0.4627272312981854,
+      "icc_sd": 0.059593002958050596,
+      "icc_min": 0.42411990939690697,
+      "icc_max": 0.5808645282958712,
+      "icc_range": 0.15674461889896424
+    },
+    "test_retest": [
+      {
+        "variant": "zero_shot",
+        "temperature": 0.0,
+        "n_repeats": 3,
+        "n_seeds": 3,
+        "n_transcripts": 30,
+        "retest_icc": 0.9999999999999997,
+        "mean_cv": 1.0066945262905004e-16,
+        "degenerate": false
+      },
+      {
+        "variant": "zero_shot",
+        "temperature": 0.3,
+        "n_repeats": 3,
+        "n_seeds": 3,
+        "n_transcripts": 30,
+        "retest_icc": 0.964571664849829,
+        "mean_cv": 0.1703498793161107,
+        "degenerate": false
+      }
+    ]
+  },
+  {
+    "model_id": "llama3.1:8b",
+    "variant": "few_shot",
+    "seed": 42,
+    "paraphrase": {
+      "variant": "few_shot",
+      "n_paraphrases": 6,
+      "n_transcripts": 30,
+      "per_paraphrase_icc": {
+        "p0_identity": 0.3442516334766965,
+        "p1_careful": 0.42115383631909775,
+        "p2_concise": 0.30970578975489105,
+        "p3_neutral": 0.41780141616737715,
+        "p4_format": 0.2755071591748482,
+        "p5_evidence": 0.48868921293570783
+      },
+      "icc_mean": 0.3761848413047697,
+      "icc_sd": 0.07998321472431795,
+      "icc_min": 0.2755071591748482,
+      "icc_max": 0.48868921293570783,
+      "icc_range": 0.21318205376085964
+    },
+    "test_retest": [
+      {
+        "variant": "few_shot",
+        "temperature": 0.0,
+        "n_repeats": 3,
+        "n_seeds": 3,
+        "n_transcripts": 30,
+        "retest_icc": 1.0000000000000007,
+        "mean_cv": 1.0558586775744551e-16,
+        "degenerate": false
+      },
+      {
+        "variant": "few_shot",
+        "temperature": 0.3,
+        "n_repeats": 3,
+        "n_seeds": 3,
+        "n_transcripts": 30,
+        "retest_icc": 0.921043286114509,
+        "mean_cv": 0.24012092515099467,
+        "degenerate": false
+      }
+    ]
+  }
+]

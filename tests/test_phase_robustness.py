@@ -198,3 +198,17 @@ def test_contract_rejects_nan_in_non_degenerate_cell(tmp_path) -> None:
     p.write_text(json.dumps(bad), encoding="utf-8")
     with pytest.raises(AssertionError, match="no silent number"):
         check_robustness_inputs(p)
+
+
+def test_icc_range_check_tolerates_float_epsilon_above_one() -> None:
+    """Regression: the real llama3.1:8b temp-0 retest produced ICC 1.0000000000000007 (a float
+    epsilon above 1.0 from the ANOVA estimator on a perfectly deterministic rescoring); the
+    contract must accept it while still rejecting genuinely out-of-range values."""
+    from harness.contracts.robustness import _check_icc_value
+
+    _check_icc_value(1.0000000000000007, "retest", allow_nan=False)  # must not raise
+    _check_icc_value(-1.0000000000000007, "retest", allow_nan=False)  # must not raise
+    with pytest.raises(AssertionError, match="outside"):
+        _check_icc_value(1.1, "retest", allow_nan=False)
+    with pytest.raises(AssertionError, match="outside"):
+        _check_icc_value(1.0 + 1e-6, "retest", allow_nan=False)

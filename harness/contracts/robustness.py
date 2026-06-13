@@ -25,13 +25,17 @@ PathLike = Union[str, Path]
 MIN_PARAPHRASES = 5
 _VALID_VARIANTS = {"zero_shot", "few_shot"}
 
+#: Float tolerance on the ICC range check: the ANOVA estimator can legitimately land an epsilon
+#: above 1.0 (e.g. 1.0000000000000007 on a perfectly deterministic temp-0 retest).
+ICC_FLOAT_EPS = 1e-9
+
 
 def _check_icc_value(value: object, ctx: str, *, allow_nan: bool) -> None:
     v = float(value)  # type: ignore[arg-type]
     if math.isnan(v):
         assert allow_nan, f"{ctx}: unexpected nan (degenerate variance must be flagged explicitly)"
         return
-    assert -1.0 <= v <= 1.0, f"{ctx}: ICC {v} outside [-1, 1]"
+    assert -1.0 - ICC_FLOAT_EPS <= v <= 1.0 + ICC_FLOAT_EPS, f"{ctx}: ICC {v} outside [-1, 1]"
 
 
 #: A paraphrase ICC at or below this magnitude is treated as numerically zero (the mock LLM emits a

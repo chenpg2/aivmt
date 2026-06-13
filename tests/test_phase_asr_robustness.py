@@ -206,3 +206,15 @@ def test_contract_accepts_curve_with_one_degenerate_point(tmp_path) -> None:
     p = tmp_path / "asr_robustness.json"
     p.write_text(json.dumps(ok), encoding="utf-8")
     check_asr_robustness_inputs(p)  # must not raise
+
+
+def test_icc_range_check_tolerates_float_epsilon_above_one() -> None:
+    """Regression (mirrors phase_robustness): deterministic rescoring can land the ANOVA ICC an
+    epsilon above 1.0; the contract must tolerate it but still reject real out-of-range values."""
+    import pytest as _pytest
+
+    from harness.contracts.asr_robustness import _check_icc_value
+
+    _check_icc_value(1.0000000000000007, "curve", allow_nan=False)  # must not raise
+    with _pytest.raises(AssertionError, match="outside"):
+        _check_icc_value(1.0 + 1e-6, "curve", allow_nan=False)

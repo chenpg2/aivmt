@@ -28,13 +28,17 @@ MIN_LEVELS = 2
 #: score, so every ICC collapses to ~±1e-16). Real-model curves move orders of magnitude more.
 _ZERO_ICC_TOL = 1e-9
 
+#: Float tolerance on the ICC range check: the ANOVA estimator can legitimately land an epsilon
+#: above 1.0 (e.g. 1.0000000000000007 on a perfectly deterministic temp-0 rescoring).
+ICC_FLOAT_EPS = 1e-9
+
 
 def _check_icc_value(value: object, ctx: str, *, allow_nan: bool) -> None:
     v = float(value)  # type: ignore[arg-type]
     if math.isnan(v):
         assert allow_nan, f"{ctx}: unexpected nan (degenerate variance must be flagged explicitly)"
         return
-    assert -1.0 <= v <= 1.0, f"{ctx}: ICC {v} outside [-1, 1]"
+    assert -1.0 - ICC_FLOAT_EPS <= v <= 1.0 + ICC_FLOAT_EPS, f"{ctx}: ICC {v} outside [-1, 1]"
 
 
 def _assert_not_uniformly_degenerate(curves: list, path: Path) -> None:
