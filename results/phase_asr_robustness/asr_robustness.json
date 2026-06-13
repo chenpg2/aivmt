@@ -1,0 +1,38 @@
+[
+  {
+    "model_id": "llama3.1:8b",
+    "variant": "zero_shot",
+    "seed": 42,
+    "metric": "cer",
+    "points": [
+      {
+        "target_wer": 0.0,
+        "achieved_cer": 0.0,
+        "icc_vs_gold": 0.3957834691533249,
+        "n_transcripts": 30,
+        "degenerate": false
+      },
+      {
+        "target_wer": 0.05,
+        "achieved_cer": 0.04761205435703679,
+        "icc_vs_gold": 0.39811398061320036,
+        "n_transcripts": 30,
+        "degenerate": false
+      },
+      {
+        "target_wer": 0.15,
+        "achieved_cer": 0.18502642521022158,
+        "icc_vs_gold": 0.2948286817714319,
+        "n_transcripts": 30,
+        "degenerate": false
+      },
+      {
+        "target_wer": 0.3,
+        "achieved_cer": 0.341751561614798,
+        "icc_vs_gold": 0.250374121555329,
+        "n_transcripts": 30,
+        "degenerate": false
+      }
+    ]
+  }
+]
