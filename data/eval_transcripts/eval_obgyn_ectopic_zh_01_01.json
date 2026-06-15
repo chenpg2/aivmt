@@ -6,6 +6,10 @@
   "turns": [
     {
       "speaker": "student",
+      "text": "您好,我是医学生,今天想了解一下您的情况,可以问您几个问题吗?"
+    },
+    {
+      "speaker": "student",
       "text": "您今天哪里不舒服?(#42_01)"
     },
     {
@@ -27,6 +31,14 @@
     {
       "speaker": "patient",
       "text": "平时月经规律,28-30天一次"
+    },
+    {
+      "speaker": "student",
+      "text": "请问您阴道流血的量、颜色、持续时间,能跟我说说吗?"
+    },
+    {
+      "speaker": "patient",
+      "text": "今天伴有少量暗红色阴道流血。"
     }
   ]
 }

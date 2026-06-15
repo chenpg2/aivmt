@@ -58,6 +58,30 @@
     },
     {
       "speaker": "student",
+      "text": "请问您激素/抗凝等用药史,能跟我说说吗?"
+    },
+    {
+      "speaker": "patient",
+      "text": "没有,不清楚。"
+    },
+    {
+      "speaker": "student",
+      "text": "请问您既往妇科疾病(如子宫肌瘤),能跟我说说吗?"
+    },
+    {
+      "speaker": "patient",
+      "text": "以前体检说过子宫上有个小肌瘤,医生说不用管。"
+    },
+    {
+      "speaker": "student",
+      "text": "请问您/排除妊娠可能,能跟我说说吗?"
+    },
+    {
+      "speaker": "patient",
+      "text": "没有,不清楚。"
+    },
+    {
+      "speaker": "student",
       "text": "请说出您的鉴别诊断及理由,以及下一步建议的检查或处理。"
     },
     {

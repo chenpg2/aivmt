@@ -6,10 +6,6 @@
   "turns": [
     {
       "speaker": "student",
-      "text": "您好,我是医学生,今天想了解一下您的情况,可以问您几个问题吗?"
-    },
-    {
-      "speaker": "student",
       "text": "您今天哪里不舒服?(#42_10)"
     },
     {
@@ -23,58 +19,6 @@
     {
       "speaker": "patient",
       "text": "白带明显增多,像豆腐渣一样"
-    },
-    {
-      "speaker": "student",
-      "text": "请问您瘙痒/灼热等局部症状,能跟我说说吗?"
-    },
-    {
-      "speaker": "patient",
-      "text": "外阴很痒,有点灼热感。"
-    },
-    {
-      "speaker": "student",
-      "text": "请问您诱因(近期抗生素/糖尿病/妊娠),能跟我说说吗?"
-    },
-    {
-      "speaker": "patient",
-      "text": "两周前感冒,自己吃了一周“消炎药”(抗生素)。"
-    },
-    {
-      "speaker": "student",
-      "text": "请问您性生活及伴侣有无症状,能跟我说说吗?"
-    },
-    {
-      "speaker": "patient",
-      "text": "已婚,性伴侣固定,对方没有不舒服"
-    },
-    {
-      "speaker": "student",
-      "text": "请问您末次月经与妊娠可能,能跟我说说吗?"
-    },
-    {
-      "speaker": "patient",
-      "text": "末次月经两周前"
-    },
-    {
-      "speaker": "student",
-      "text": "请问您既往类似发作史,能跟我说说吗?"
-    },
-    {
-      "speaker": "patient",
-      "text": "没有,不清楚。"
-    },
-    {
-      "speaker": "student",
-      "text": "请说出您的鉴别诊断及理由,以及下一步建议的检查或处理。"
-    },
-    {
-      "speaker": "patient",
-      "text": "好的,谢谢您的耐心。"
-    },
-    {
-      "speaker": "student",
-      "text": "我大概了解了,稍后会跟上级医生讨论后再向您说明下一步,谢谢您的配合。"
     }
   ]
 }

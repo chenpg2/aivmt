@@ -48,8 +48,10 @@ __all__ = [
 ]
 
 #: Coverage fractions (of the checklist) for the quality ladder, low -> high. The
-#: weakest tier asks almost nothing; the strongest covers the whole checklist.
-QUALITY_TIERS: tuple[float, ...] = (0.0, 0.2, 0.4, 0.6, 0.8, 1.0)
+#: weakest tier asks a couple of items (a poor-but-gradeable encounter); the strongest
+#: covers the whole checklist. The 0.0 tier (a 1-question, ~2-turn encounter) is excluded:
+#: a faculty rater cannot meaningfully grade an encounter where the student asked nothing.
+QUALITY_TIERS: tuple[float, ...] = (0.2, 0.4, 0.6, 0.8, 1.0)
 
 #: Apparatus utterances (study scaffolding, NOT clinical facts). A student who
 #: greets/introduces earns set_the_stage; reaching the reasoning probe lets the

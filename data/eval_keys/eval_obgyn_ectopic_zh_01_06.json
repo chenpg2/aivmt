@@ -1,5 +1,9 @@
 {
   "encounter_id": "eval_obgyn_ectopic_zh_01_06",
-  "designed_quality": 0.0,
-  "covered_item_ids": []
+  "designed_quality": 0.425,
+  "covered_item_ids": [
+    "hx_lmp",
+    "hx_menstrual",
+    "hx_bleeding"
+  ]
 }

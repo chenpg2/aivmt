@@ -11,6 +11,22 @@
     {
       "speaker": "patient",
       "text": "今天右下腹隐痛加重一天"
+    },
+    {
+      "speaker": "student",
+      "text": "请问您末次月经/停经时间,能跟我说说吗?"
+    },
+    {
+      "speaker": "patient",
+      "text": "末次月经大约6周前;停经6周多"
+    },
+    {
+      "speaker": "student",
+      "text": "请问您平时月经史(周期/规律性),能跟我说说吗?"
+    },
+    {
+      "speaker": "patient",
+      "text": "平时月经规律,28-30天一次"
     }
   ]
 }

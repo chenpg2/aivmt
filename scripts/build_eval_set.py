@@ -41,8 +41,8 @@ def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(message)s")
     parser = argparse.ArgumentParser(description="Build the path-A zh OB/GYN eval set.")
     parser.add_argument(
-        "--per-case", type=int, default=14,
-        help="transcripts generated per case (default 14 -> 42 total over 3 cases).",
+        "--per-case", type=int, default=11,
+        help="transcripts generated per case (default 11 -> 33 total over 3 cases).",
     )
     parser.add_argument(
         "--out", type=Path, default=default_eval_dir(),

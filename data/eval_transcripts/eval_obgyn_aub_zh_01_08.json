@@ -39,6 +39,42 @@
     {
       "speaker": "patient",
       "text": "近3个月"
+    },
+    {
+      "speaker": "student",
+      "text": "请问您乏力/头晕/心悸等贫血症状,能跟我说说吗?"
+    },
+    {
+      "speaker": "patient",
+      "text": "最近觉得乏力、上楼时心慌。"
+    },
+    {
+      "speaker": "student",
+      "text": "请问您避孕方式(节育环及上环年限),能跟我说说吗?"
+    },
+    {
+      "speaker": "patient",
+      "text": "上着宫内节育环,上环约8年"
+    },
+    {
+      "speaker": "student",
+      "text": "请问您激素/抗凝等用药史,能跟我说说吗?"
+    },
+    {
+      "speaker": "patient",
+      "text": "没有,不清楚。"
+    },
+    {
+      "speaker": "student",
+      "text": "请说出您的鉴别诊断及理由,以及下一步建议的检查或处理。"
+    },
+    {
+      "speaker": "patient",
+      "text": "好的,谢谢您的耐心。"
+    },
+    {
+      "speaker": "student",
+      "text": "我大概了解了,稍后会跟上级医生讨论后再向您说明下一步,谢谢您的配合。"
     }
   ]
 }

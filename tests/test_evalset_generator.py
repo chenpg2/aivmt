@@ -36,7 +36,7 @@ from aivmt.evalset.grounding import DEFAULT_NONANSWER_ZH
 from aivmt.schemas import Transcript, Turn
 
 SEED = 42
-PER_CASE = 14
+PER_CASE = 11
 
 
 def _cases():
@@ -120,8 +120,8 @@ def test_designed_quality_is_monotone_in_coverage() -> None:
     n_items = len(case.history_checklist)
     qualities = [designed_quality(n_items, frac) for frac in sorted(QUALITY_TIERS)]
     assert qualities == sorted(qualities), f"non-monotone quality ladder: {qualities}"
-    # And strictly spans low -> high (zero coverage to full coverage).
-    assert qualities[0] == pytest.approx(0.0)
+    # Spans a gradeable low (the 0.0/1-question tier is excluded) up to full coverage.
+    assert 0.0 < qualities[0] < qualities[-1]
     assert qualities[-1] == pytest.approx(1.0)
 
 
@@ -150,12 +150,12 @@ def test_transcripts_are_valid_transcript_objects() -> None:
 def test_full_eval_set_has_expected_size_and_stable_ids() -> None:
     cases = _cases()
     dataset = build_eval_set(cases, seed=SEED, per_case=PER_CASE)
-    assert len(dataset) == PER_CASE * len(cases) == 42
+    assert len(dataset) == PER_CASE * len(cases) == 33
     ids = [g.transcript.encounter_id for g in dataset]
     assert len(set(ids)) == len(ids), "encounter_ids must be unique"
-    # quality is diverse: spans low and high.
+    # quality is diverse: spans a gradeable low (0.0 tier excluded) up to full coverage.
     qualities = [g.designed_quality for g in dataset]
-    assert min(qualities) == pytest.approx(0.0)
+    assert 0.0 < min(qualities) < max(qualities)
     assert max(qualities) == pytest.approx(1.0)
 
 

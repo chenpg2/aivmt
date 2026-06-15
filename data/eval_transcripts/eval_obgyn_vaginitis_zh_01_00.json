@@ -11,6 +11,14 @@
     {
       "speaker": "patient",
       "text": "近5天白带明显增多,像豆腐渣一样"
+    },
+    {
+      "speaker": "student",
+      "text": "请问您分泌物性状/颜色/气味,能跟我说说吗?"
+    },
+    {
+      "speaker": "patient",
+      "text": "白带明显增多,像豆腐渣一样"
     }
   ]
 }
