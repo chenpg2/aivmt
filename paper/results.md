@@ -1,52 +1,76 @@
 # Results
 
-> Auto-drafted skeleton (2026-06-13). Every number below is copied from a registered harness phase
-> artifact under `results/` and carries an inline source pointer. No number is invented. The primary
-> endpoint (agreement with blinded faculty) is **not yet computed** and is shown as an explicit
-> placeholder. Every absolute ICC drawn from a synthetic run is labelled *agreement with the designed
-> synthetic gold*, which is **not** a faculty-validity number.
+> Drafted 2026-06-13; primary faculty result filled 2026-06-16. Every number below is copied from a
+> registered harness phase artifact under `results/` and carries an inline source pointer. No number
+> is invented. The **primary endpoint (agreement with 3 blinded faculty) is now computed** (SQ1
+> below). Every absolute ICC drawn from a *synthetic-gold* run is still labelled *agreement with the
+> designed synthetic gold*, which is **not** a faculty-validity number — only SQ1 is faculty-anchored.
 
-## SQ1 (primary) — agreement with blinded faculty consensus: PENDING
+## SQ1 (primary) — agreement with blinded faculty consensus
 
 The primary endpoint is the absolute-agreement ICC(2,1) between the local-model automated score and
 the consensus of k = 3 blinded faculty raters on Chinese OB/GYN history-taking encounters
-(`HYPOTHESIS.md`, pre-registered threshold ICC(2,1) ≥ 0.75). **This number does not exist yet.** No
-faculty ratings have been collected: `data/faculty_ratings.csv` is absent and
-`data/faculty_rating_sheet.csv` is a blank k = 3 template over the 42-encounter evaluation set
-(`phase_scoring_validity`, `results/evidence_table.md` reports
-`status=PENDING_REAL_DATA`). The evaluation set is prepared and already scored by the system, awaiting
-faculty.
+(`HYPOTHESIS.md`, pre-registered threshold ICC(2,1) ≥ 0.75). On the frozen 33-encounter evaluation
+set scored by three blinded OB/GYN faculty (system = llama3.1:8b), the **primary endpoint is met**
+(`phase_scoring_validity`, `results/evidence_table.md` reports `status=REAL_DATA`; raw ratings in the
+gitignored `data/faculty_ratings.csv`, n = 33, k = 3, 0% missing cells).
 
 ```
-PRIMARY RESULT (to be filled when faculty ratings are collected)
-  Design: 42 zh OB/GYN encounters (3 cases x 14 graded variants) x k=3 blinded faculty raters
-          (planned scale-up to n=150 encounters x 3 raters; floor n=100; pilot ~25; contingency n~40)
-  Source phase: phase_scoring_validity (PENDING_REAL_DATA)
-
-  Overall:            [FACULTY-ICC(2,1): pending]  (95% CI [pending], McGraw & Wong F-based)
-                      [FACULTY-ICC(2,k): pending]  (95% CI [pending])
-                      [BOOTSTRAP 95% CI: pending]
-  Per subscore (ICC(2,1) vs faculty, all pending):
-    set_the_stage          [pending]
-    elicit_information     [pending]
-    give_information       [pending]
-    understand_perspective [pending]
-    end_encounter          [pending]
-    history_completion     [pending]
-    reasoning              [pending]
-  Faculty inter-rater ICC (agreement ceiling):        [pending]
-  Weighted kappa (quadratic, ordinal items):          [pending]
-  Bland-Altman (bias, 95% LoA, proportional slope+p): [pending]
-  G-theory variance components + D-study (k=1..5):    [pending]
-  Decision consistency at pass/fail cut 0.6
-    (raw agreement + Cohen's kappa):                  [pending]
-  Primary endpoint met (ICC(2,1) >= 0.75)?            [pending]
+PRIMARY RESULT (phase_scoring_validity, status=REAL_DATA; n=33 encounters x k=3 blinded faculty)
+  Overall ICC(2,1) = 0.903   95% CI [0.737, 0.958]  (McGraw & Wong F-based)
+          ICC(2,k) = 0.949   95% CI [0.849, 0.979]
+          seeded bootstrap ICC(2,1) 95% CI [0.846, 0.935]  (independent cross-check)
+  Faculty inter-rater ceiling: ICC(2,1) = 0.765 [0.533, 0.884]; ICC(2,k) = 0.907 [0.774, 0.958]
+  Pairwise system-vs-each-rater ICC(2,1): fac01 0.741, fac02 0.840, fac03 0.916
+  PRIMARY ENDPOINT MET (ICC(2,1) >= 0.75)?  YES (point 0.903; CI lower bound 0.737)
 ```
 
-A harness fixture cross-check confirms the validity machinery and its negative control behave
-correctly (these are **sanity fixtures, not model results and not faculty validity**): on correctly
-paired synthetic encounters the overall ICC is **0.957**, and under shuffled pairing it collapses to
-**0.019** (`phase_scoring_validity`, `results/evidence_table.md`).
+**Headline.** The single local open-weight model agrees with the three-faculty consensus at
+ICC(2,1) = 0.903 — *at or above* the level at which the faculty agree with one another (inter-rater
+ceiling ICC(2,1) = 0.765). The automated scorer is, on the overall score, as reliable a rater as a
+human expert on this set.
+
+**Per-subscore agreement (system vs faculty consensus, ICC(2,1) with 95% CI):**
+
+| dimension | ICC(2,1) | 95% CI | ICC(2,k) | weighted κ (quadratic) |
+|---|---|---|---|---|
+| **overall** | **0.903** | [0.737, 0.958] | 0.949 | — |
+| set_the_stage | 0.343 | [−0.089, 0.704] | 0.510 | 0.244 |
+| elicit_information | 0.165 | [−0.091, 0.461] | 0.283 | 0.073 |
+| give_information | 0.667 | [−0.081, 0.897] | 0.801 | 0.485 |
+| understand_perspective | 0.702 | [0.240, 0.873] | 0.825 | 0.761 |
+| end_encounter | 0.889 | [0.573, 0.959] | 0.941 | 0.741 |
+| history_completion | 0.931 | [0.826, 0.969] | 0.964 | — |
+| reasoning | −0.016 | [−0.103, 0.124] | −0.033 | 0.022 |
+
+**The agreement is domain-structured, and honestly so.** The model tracks faculty closely on the
+countable, content-coverage domains (history_completion 0.931, end_encounter 0.889,
+understand_perspective 0.702, give_information 0.667) but **collapses on the qualitative
+communication and reasoning subdomains** (set_the_stage 0.343, elicit_information 0.165, reasoning
+−0.016). In plain terms: the scorer reliably judges *what* the student covered, but not yet *how
+well* they communicated or reasoned — the same communication-subdomain weakness reported for cloud
+GPT-4o in ECOSBot. The strong overall ICC is carried by the coverage domains.
+
+**Supporting agreement statistics (overall, vs faculty consensus):**
+- Bland–Altman: bias = −0.054 (system scores marginally below faculty), 95% limits of agreement
+  [−0.228, 0.120], proportional-bias slope = −0.334 (p < 0.001) — the system is relatively
+  *harsher* on high-scoring encounters.
+- G-theory (person × rater): variance components person 0.066 / rater 0.007 / residual 0.013;
+  G = 0.936, Φ = 0.907 — rater variance is small, i.e. the rubric generalizes well across raters.
+- Decision consistency at the 0.6 pass/fail cut: raw agreement 0.758, Cohen's κ = 0.000 — degenerate
+  at this cut on this set (almost all 33 encounters fall on the same side of 0.6 for both system and
+  faculty), so κ is uninformative here; the continuous ICC, not the dichotomized cut, is the endpoint.
+
+**Caveats (load-bearing — these scope the claim).** (1) The transcripts are **synthetic**, grounded
+in the collaborator-reviewed OB/GYN cases; the faculty ratings are real. This validates **the scorer**
+(does the model agree with faculty on the same encounters?), not full ecological/prospective validity
+on live student encounters. (2) **n = 33** — the CI is real but not narrow; a scale-up (pre-registered
+floor n = 100) would tighten it. (3) One fac02 entry was recorded as `03` on the 0–1 scale and
+interpreted as 0.3. (4) The reasoning subdomain ICC ≈ 0 is a genuine scorer limitation, reported, not
+smoothed over.
+
+A harness negative-control cross-check confirms the validity machinery behaves correctly: shuffling
+the encounter–rating pairing collapses the overall ICC toward zero (`phase_scoring_validity` sanity).
 
 ## Supporting results (computed)
 
@@ -177,11 +201,12 @@ run as the current-scorer result** and report the English pilot only to document
 
 ## Outstanding pending quantities
 
-Beyond the primary faculty ICC, the following are pre-specified but not yet computed and must remain
-placeholders until real data exist: `[per-subscore faculty ICC]`, `[faculty inter-rater ICC ceiling]`,
-`[bootstrap 95% CI on faculty ICC]`, `[weighted kappa vs faculty]`, `[Bland-Altman vs faculty]`,
-`[G-theory + D-study vs faculty]`, `[decision consistency at cut 0.6 vs faculty]`,
-`[faculty-anchored non-inferiority vs cloud]`, `[fairness/subgroup analysis by specialty, difficulty,
-and zh-vs-en]`, `[real collection-day zh transcripts]`, `[final frozen sample size n]`, `[few-shot
-ablation as an end-to-end harness arm]`, `[pinned per-model quant digests]`, `[full
-compute/energy/cost accounting for SQ3]`, and `[SQ3 total-cost vs cloud and human-SP baselines]`.
+The SQ1 primary faculty ICC and its supporting statistics (per-subscore ICC, inter-rater ceiling,
+bootstrap CI, weighted kappa, Bland–Altman, G-theory, decision consistency) are now **computed**
+(see SQ1 above). The following remain pre-specified but not yet computed, and stay placeholders until
+the corresponding data exist: `[faculty-anchored non-inferiority vs cloud]` (re-run the local-vs-cloud
+head-to-head against faculty consensus rather than synthetic gold), `[fairness/subgroup analysis by
+specialty and difficulty]`, `[prospective live-student zh transcripts]` (current SQ1 is on synthetic
+transcripts), `[scale-up to the pre-registered floor n = 100]`, `[few-shot ablation as an end-to-end
+harness arm]`, `[pinned per-model quant digests]`, `[SQ2 embodiment — device not flashed]`, and
+`[SQ3 total-cost vs cloud and human-SP baselines]`.
