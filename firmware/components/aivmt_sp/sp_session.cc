@@ -19,6 +19,7 @@ SpSession::SpSession(const SpConfig& cfg, Hooks hooks)
   persona_.case_id = cfg_.default_case_id;
   persona_.language = cfg_.language;
   persona_.display_label = Pick(cfg_.language, "患者", "Patient");
+  participant_.Set(cfg_.participant_code);  // non-empty default so encounter export validates
 }
 
 void SpSession::Start() { Enter(SpState::kConsent); }
