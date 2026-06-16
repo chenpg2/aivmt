@@ -1,16 +1,10 @@
-#include "sp_persona.h"
-
-#include "esp_log.h"
+// Patient persona rendering is provided by the host firmware through the
+// SpSession::Hooks::show_persona callback (see sp_session.h / application.cc).
+// This translation unit is intentionally minimal so the component stays
+// base-firmware-agnostic; the PatientPersona data struct lives in sp_persona.h.
 
 namespace aivmt {
 
-static const char* TAG = "AIVMT.Persona";
-
-void RenderPersona(const PatientPersona& persona, const char* state_text) {
-  // TODO(goal:persona): route to the base firmware's display API (OLED/LVGL).
-  // Show persona.display_label as the "patient" identity + state_text as the status line.
-  ESP_LOGI(TAG, "persona=%s state=%s", persona.display_label.c_str(),
-           state_text ? state_text : "");
-}
+// No host-agnostic implementation needed here.
 
 }  // namespace aivmt

@@ -47,7 +47,10 @@ void SpSession::Enter(SpState next) {
 
     case SpState::kEncounter:
       telemetry_.Begin();
-      RenderPersona(persona_, Pick(cfg_.language, "问诊中", "Encounter"));
+      if (hooks_.show_persona) {
+        hooks_.show_persona(persona_.display_label.c_str(),
+                            Pick(cfg_.language, "问诊中", "Encounter"));
+      }
       // Half-duplex: wait for push-to-talk; do not auto-listen (no-AEC mitigation).
       break;
 
@@ -61,7 +64,10 @@ void SpSession::Enter(SpState next) {
 
     case SpState::kFeedback:
       // Score + structured feedback are produced server-side, then rendered here.
-      RenderPersona(persona_, Pick(cfg_.language, "反馈", "Feedback"));
+      if (hooks_.show_persona) {
+        hooks_.show_persona(persona_.display_label.c_str(),
+                            Pick(cfg_.language, "反馈", "Feedback"));
+      }
       break;
 
     case SpState::kEnded:

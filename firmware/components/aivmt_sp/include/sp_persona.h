@@ -14,8 +14,8 @@ struct PatientPersona {
   Language language = Language::kEn;
 };
 
-// Render the patient identity + a short state line to the device display.
-// Implementation calls the base firmware's display hook.
-void RenderPersona(const PatientPersona& persona, const char* state_text);
+// NOTE: persona rendering is performed by the host firmware via
+// SpSession::Hooks::show_persona (label + state line) — there is no
+// host-agnostic render function in this component.
 
 }  // namespace aivmt

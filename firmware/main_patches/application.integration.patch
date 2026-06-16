@@ -1,0 +1,246 @@
+diff --git a/main/CMakeLists.txt b/main/CMakeLists.txt
+index b324e22..82cd328 100644
+--- a/main/CMakeLists.txt
++++ b/main/CMakeLists.txt
+@@ -1029,6 +1029,8 @@ idf_component_register(SRCS ${SOURCES}
+                         efuse
+                         bt
+                         fatfs
++                        esp_http_client
++                        aivmt_sp
+                         ${MAIN_PRIV_REQUIRES_EXTRA}
+                     )
+ 
+diff --git a/main/application.cc b/main/application.cc
+index d54ac6b..e83d90a 100644
+--- a/main/application.cc
++++ b/main/application.cc
+@@ -10,15 +10,193 @@
+ #include "assets.h"
+ #include "settings.h"
+ 
++#include "sp_session.h"  // AIVMT standardized-patient layer (components/aivmt_sp)
++#include "boards/common/button.h"  // AIVMT PTT button (guarded by CONFIG_AIVMT_PTT_ENABLE)
++
+ #include <cstring>
+ #include <esp_log.h>
+ #include <cJSON.h>
+ #include <driver/gpio.h>
+ #include <arpa/inet.h>
+ #include <font_awesome.h>
++#include <esp_http_client.h>
++
++#include <string>
++#include <utility>
++#include <vector>
+ 
+ #define TAG "Application"
+ 
++// ---------------------------------------------------------------------------
++// AIVMT standardized-patient (SP) host wiring. The components/aivmt_sp layer is
++// base-firmware-agnostic and talks to the device only through SpSession::Hooks;
++// ALL hardware/base-firmware calls (display, audio, http, buttons) live here.
++//
++// Encounter flow on device:
++//   - persona -> OLED (show_persona)
++//   - scripted patient prompts -> OLED (speak); live dialogue is server TTS
++//   - push-to-talk turns -> StartListening()/StopListening()
++//   - transcript accumulated from protocol stt/tts messages while a session runs
++//   - finished encounter POSTed to the local server (emit_encounter)
++static aivmt::SpSession* g_aivmt_sp = nullptr;
++
++// Transcript + telemetry are only touched on the main task (via Schedule) or from
++// the OnIncomingJson handler, which itself dispatches mutation onto the main task.
++// g_sp_active gates accumulation to the lifetime of an SP session.
++static bool g_sp_active = false;
++static std::vector<std::pair<std::string, std::string>> g_sp_transcript;  // (role, text)
++
++// POST a finished encounter (telemetry + transcript) to the self-hosted local
++// server. Local-only by policy (patient confidentiality); fails loud, never crashes.
++static void AivmtPostEncounter(const aivmt::SpTelemetry& tel, const char* meta_json) {
++    cJSON* root = cJSON_CreateObject();
++    if (root == nullptr) {
++        ESP_LOGE("AIVMT.Hook", "emit_encounter: out of memory");
++        return;
++    }
++
++    cJSON_AddStringToObject(root, "participant_code",
++                            g_aivmt_sp ? g_aivmt_sp->participant_code().c_str() : "");
++    cJSON_AddStringToObject(root, "case_id",
++                            g_aivmt_sp ? g_aivmt_sp->case_id().c_str() : "");
++
++    cJSON* telemetry = cJSON_CreateObject();
++    cJSON_AddNumberToObject(telemetry, "n_student_questions", tel.n_student_questions);
++    cJSON_AddNumberToObject(telemetry, "n_voluntary_repeats", tel.n_voluntary_repeats);
++    cJSON_AddNumberToObject(telemetry, "duration_seconds", tel.DurationSeconds());
++    cJSON_AddItemToObject(root, "telemetry", telemetry);
++
++    cJSON* transcript = cJSON_CreateArray();
++    for (const auto& turn : g_sp_transcript) {
++        cJSON* item = cJSON_CreateObject();
++        // cJSON escapes string values; never hand-concatenate JSON.
++        cJSON_AddStringToObject(item, "role", turn.first.c_str());
++        cJSON_AddStringToObject(item, "text", turn.second.c_str());
++        cJSON_AddItemToArray(transcript, item);
++    }
++    cJSON_AddItemToObject(root, "transcript", transcript);
++
++    // meta_json is a JSON document produced by the SP layer; parse so it nests as
++    // an object rather than an escaped string. Fall back to null if unparseable.
++    cJSON* meta = (meta_json != nullptr) ? cJSON_Parse(meta_json) : nullptr;
++    cJSON_AddItemToObject(root, "meta", meta ? meta : cJSON_CreateNull());
++
++    char* body = cJSON_PrintUnformatted(root);
++    cJSON_Delete(root);
++    if (body == nullptr) {
++        ESP_LOGE("AIVMT.Hook", "emit_encounter: failed to serialize JSON");
++        return;
++    }
++
++    esp_http_client_config_t config = {};
++    config.url = CONFIG_AIVMT_ENCOUNTER_POST_URL;
++    config.method = HTTP_METHOD_POST;
++    config.timeout_ms = 10000;
++    esp_http_client_handle_t client = esp_http_client_init(&config);
++    if (client == nullptr) {
++        ESP_LOGE("AIVMT.Hook", "emit_encounter: http client init failed");
++        cJSON_free(body);
++        return;
++    }
++
++    esp_http_client_set_header(client, "Content-Type", "application/json");
++    esp_http_client_set_post_field(client, body, strlen(body));
++
++    esp_err_t err = esp_http_client_perform(client);
++    if (err != ESP_OK) {
++        ESP_LOGE("AIVMT.Hook", "emit_encounter: POST to %s failed: %s",
++                 CONFIG_AIVMT_ENCOUNTER_POST_URL, esp_err_to_name(err));
++    } else {
++        int status = esp_http_client_get_status_code(client);
++        if (status < 200 || status >= 300) {
++            ESP_LOGE("AIVMT.Hook", "emit_encounter: server returned HTTP %d", status);
++        } else {
++            ESP_LOGI("AIVMT.Hook", "emit_encounter: POSTed %u turns, HTTP %d",
++                     (unsigned)g_sp_transcript.size(), status);
++        }
++    }
++
++    esp_http_client_cleanup(client);
++    cJSON_free(body);
++}
++
++static void StartAivmtSp() {
++    aivmt::SpSession::Hooks hooks;
++    hooks.show_text = [](const char* text) {
++        if (text == nullptr) {
++            return;
++        }
++        // Run on the main task; safe to call from any context.
++        Application::GetInstance().Schedule([message = std::string(text)]() {
++            auto display = Board::GetInstance().GetDisplay();
++            display->SetChatMessage("system", ("[AIVMT/SP] " + message).c_str());
++        });
++    };
++    hooks.show_persona = [](const char* label, const char* state) {
++        std::string label_str = label ? label : "";
++        std::string state_str = state ? state : "";
++        Application::GetInstance().Schedule([label_str, state_str]() {
++            auto display = Board::GetInstance().GetDisplay();
++            display->SetChatMessage(
++                "assistant",
++                ("[患者 Patient] " + label_str + " · " + state_str).c_str());
++        });
++    };
++    hooks.speak = [](const char* text) {
++        // Render the scripted patient line on the OLED. Local TTS of scripted
++        // prompts is out of scope; the live encounter dialogue already uses
++        // server-driven TTS (handled in OnIncomingJson "tts" messages).
++        if (text == nullptr) {
++            return;
++        }
++        Application::GetInstance().Schedule([message = std::string(text)]() {
++            auto display = Board::GetInstance().GetDisplay();
++            display->SetChatMessage("assistant", message.c_str());
++        });
++    };
++    hooks.start_listening = []() {
++        // Open a manual push-to-talk turn using the base firmware's thread-safe,
++        // event-based API (opens the audio channel in kListeningModeManualStop).
++        // TODO(on-device): tune PTT turn capture (no-AEC half-duplex, no echo).
++        Application::GetInstance().StartListening();
++    };
++    hooks.stop_listening = []() {
++        // Close the current manual turn (sends stop-listening, returns to idle).
++        // TODO(on-device): tune PTT turn capture (no-AEC half-duplex, no echo).
++        Application::GetInstance().StopListening();
++    };
++    hooks.emit_encounter = [](const aivmt::SpTelemetry& tel, const char* meta_json) {
++        // Serialize telemetry on the calling task, then POST on the main task so
++        // the transcript buffer is read without a data race.
++        aivmt::SpTelemetry tel_copy = tel;
++        std::string meta = meta_json ? meta_json : "{}";
++        Application::GetInstance().Schedule([tel_copy, meta]() {
++            AivmtPostEncounter(tel_copy, meta.c_str());
++        });
++    };
++
++    g_aivmt_sp = new aivmt::SpSession(aivmt::DefaultSpConfig(), hooks);
++    g_sp_active = true;
++    g_sp_transcript.clear();
++
++#if CONFIG_AIVMT_PTT_ENABLE
++    // Dedicated push-to-talk button (active-low). Created only when a PTT GPIO is
++    // configured; the default build (PTT disabled) is unaffected. Forward raw
++    // button events to the SP encounter state machine, which calls
++    // start_listening on press and stop_listening on release.
++    static Button g_ptt_button((gpio_num_t)CONFIG_AIVMT_PTT_GPIO);
++    g_ptt_button.OnPressDown([]() {
++        if (g_aivmt_sp) g_aivmt_sp->OnEvent(aivmt::SpEvent::kPttPress);
++    });
++    g_ptt_button.OnPressUp([]() {
++        if (g_aivmt_sp) g_aivmt_sp->OnEvent(aivmt::SpEvent::kPttRelease);
++    });
++    ESP_LOGI("AIVMT.Hook", "PTT button enabled on GPIO %d", CONFIG_AIVMT_PTT_GPIO);
++#endif
++
++    g_aivmt_sp->Start();  // -> logs "AIVMT.SpSession: enter Consent"
++}
++
+ 
+ Application::Application() {
+     event_group_ = xEventGroupCreate();
+@@ -160,6 +338,9 @@ void Application::Initialize() {
+ 
+     // Update the status bar immediately to show the network state
+     display->UpdateStatusBar(true);
++
++    // AIVMT: start the standardized-patient session layer (display-only for G0)
++    StartAivmtSp();
+ }
+ 
+ void Application::Run() {
+@@ -544,6 +725,10 @@ void Application::InitializeProtocol() {
+                     ESP_LOGI(TAG, "<< %s", text->valuestring);
+                     Schedule([display, message = std::string(text->valuestring)]() {
+                         display->SetChatMessage("assistant", message.c_str());
++                        // AIVMT: the assistant/TTS line is the standardized patient.
++                        if (g_sp_active) {
++                            g_sp_transcript.emplace_back("patient", message);
++                        }
+                     });
+                 }
+             }
+@@ -553,6 +738,13 @@ void Application::InitializeProtocol() {
+                 ESP_LOGI(TAG, ">> %s", text->valuestring);
+                 Schedule([display, message = std::string(text->valuestring)]() {
+                     display->SetChatMessage("user", message.c_str());
++                    // AIVMT: the recognized speech is the student's question/turn.
++                    if (g_sp_active) {
++                        g_sp_transcript.emplace_back("student", message);
++                        if (g_aivmt_sp) {
++                            g_aivmt_sp->telemetry().OnStudentQuestion();
++                        }
++                    }
+                 });
+             }
+         } else if (strcmp(type->valuestring, "llm") == 0) {

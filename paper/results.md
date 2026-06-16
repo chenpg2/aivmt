@@ -179,13 +179,19 @@ validity claim.
 
 ## Apparatus status (not a study result)
 
-The firmware build is verified green for the exact ESP32-S3 board: ESP-IDF v5.5.2, target confirmed
-from the binary chip id, the `aivmt_sp` component compiles and links, the 2,648,944-byte application
-image fits with 36% slot free, and the 16 MB flash layout matches the physical device
-(`firmware/G0_BUILD_REPORT.md`). The device is **not flashed for a study** and the SP hooks are **not
-wired** (`SpSession` dormant), so as built it behaves like the stock upstream voice assistant and
-cannot run an encounter; the embodiment study (SQ2) is therefore `[SQ2 embodiment result: pending —
-device not flashed]`.
+The firmware build is verified green for the exact ESP32-S3 board (ESP-IDF v5.5.2, target esp32s3;
+`aivmt_sp` compiles and links; the ~2.67 MB application image fits with ~35% slot free). The SP layer
+is now **wired into the base application, not dormant**: the patient persona renders to the OLED, a
+push-to-talk button (Kconfig-gated) drives the half-duplex turn events, the live transcript is
+accumulated from the device's STT/TTS stream, and a finished encounter is exported via HTTP POST to a
+new `POST /aivmt/encounter` endpoint on the self-hosted server (which archives it locally and is
+configured to serve the same local open-weight model used for scoring). The host-side state-machine
+unit test passes and the server endpoint is unit-tested (valid/200, malformed/4xx, path-traversal
+rejected, atomic write). What remains is **physical**: the device is **not yet flashed and on-device
+QA is not yet run** — three values must be set on the hardware (PTT GPIO, server URL, audio-turn
+timing) and four QA gates passed (PTT no-echo on the no-AEC board, OLED persona, offline operation,
+real-speech WER ≤ ~20%), per `firmware/FLASH_AND_QA.md`. The embodiment study (SQ2) is therefore
+`[SQ2 embodiment result: pending — firmware wired + build-verified; device not yet flashed/QA'd]`.
 
 ## An earlier English synthetic pilot (superseded; reported for transparency)
 

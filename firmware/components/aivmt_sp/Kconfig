@@ -1,0 +1,28 @@
+menu "AIVMT Standardized-Patient"
+
+    config AIVMT_PTT_ENABLE
+        bool "Enable push-to-talk (PTT) hardware button for SP encounters"
+        default n
+        help
+            When enabled, the host firmware creates a dedicated GPIO button that
+            forwards press/release events to the SpSession encounter state
+            (start/stop listening). Leave disabled for boards without a wired PTT
+            button; the default build is unaffected.
+
+    config AIVMT_PTT_GPIO
+        int "PTT button GPIO number"
+        default -1
+        depends on AIVMT_PTT_ENABLE
+        help
+            GPIO the push-to-talk button is wired to (active-low). Set to the
+            physical button pin on your board. -1 means unconfigured.
+
+    config AIVMT_ENCOUNTER_POST_URL
+        string "Local server URL to POST a finished SP encounter"
+        default "http://CHANGE_ME_LOCAL_SERVER:8003/aivmt/encounter"
+        help
+            HTTP endpoint on the self-hosted local server that receives the
+            de-identified encounter JSON (telemetry + transcript). Local-only by
+            policy (patient confidentiality); no cloud fallback.
+
+endmenu
