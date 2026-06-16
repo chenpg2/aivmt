@@ -20,10 +20,10 @@ from pathlib import Path
 
 import yaml
 
-AIVMT = Path("/Users/chenpg/Downloads/soft/xiaozhi/AIVMT")
+AIVMT = Path(__file__).resolve().parent.parent
 EVAL_DIR = AIVMT / "data/eval_transcripts"
 CASE_DIR = AIVMT / "conf/case"
-OUT_TEX = Path("/Users/chenpg/Downloads/soft/xiaozhi/plan/教师评分包.tex")
+OUT_TEX = AIVMT / "outputs" / "faculty_scoring_packet.tex"
 
 _MARKER = re.compile(r"\s*\(#\d+_\d+\)")
 _TODO = "TODO_COLLAB"
