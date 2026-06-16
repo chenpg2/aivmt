@@ -1,62 +1,31 @@
 diff --git a/main/application.cc b/main/application.cc
-index 974a3d4..f0145a5 100644
+index f0145a5..a757f81 100644
 --- a/main/application.cc
 +++ b/main/application.cc
-@@ -180,35 +180,29 @@ static void StartAivmtSp() {
-     g_sp_transcript.clear();
- 
- #if CONFIG_AIVMT_PTT_ENABLE
--    // Dedicated push-to-talk button (active-low). Created only when a PTT GPIO is
--    // configured; the default build (PTT disabled) is unaffected. Forward raw
--    // button events to the SP encounter state machine, which calls
--    // start_listening on press and stop_listening on release.
--    // long_press_time 600ms: a held "talk" press registers as press-down/up (PTT),
--    // NOT as a click, so a short click can safely mean "advance the SP phase".
--    static Button g_ptt_button((gpio_num_t)CONFIG_AIVMT_PTT_GPIO, false, 600);
--    g_ptt_button.OnPressDown([]() {
--        if (g_aivmt_sp) g_aivmt_sp->OnEvent(aivmt::SpEvent::kPttPress);
--    });
--    g_ptt_button.OnPressUp([]() {
--        if (g_aivmt_sp) g_aivmt_sp->OnEvent(aivmt::SpEvent::kPttRelease);
--    });
--    // Short click advances the SP flow by the event natural to the current state:
--    // Consent->ConsentGiven, CaseBrief->BriefDone, Encounter->ProbeStart (done asking),
--    // ReasoningProbe->ProbeAnswered, Feedback->FeedbackShown (->Ended, exports encounter).
--    g_ptt_button.OnClick([]() {
--        if (!g_aivmt_sp) return;
--        switch (g_aivmt_sp->state()) {
--            case aivmt::SpState::kConsent:        g_aivmt_sp->OnEvent(aivmt::SpEvent::kConsentGiven); break;
--            case aivmt::SpState::kCaseBrief:      g_aivmt_sp->OnEvent(aivmt::SpEvent::kBriefDone); break;
--            case aivmt::SpState::kEncounter:      g_aivmt_sp->OnEvent(aivmt::SpEvent::kProbeStart); break;
--            case aivmt::SpState::kReasoningProbe: g_aivmt_sp->OnEvent(aivmt::SpEvent::kProbeAnswered); break;
--            case aivmt::SpState::kFeedback:       g_aivmt_sp->OnEvent(aivmt::SpEvent::kFeedbackShown); break;
--            default: break;
--        }
-+    // The conversation itself runs on the board's EXISTING touch-button PTT (GPIO47) ->
-+    // base listening loop, which already works. We deliberately do NOT add a competing
-+    // button on the boot GPIO: that both collided with the board's own boot handler and
-+    // raced the SP phase machine to Ended (so PTT/telemetry/export mis-fired).
-+    //
-+    // Instead, the transcript is accumulated continuously from the live STT/TTS stream
-+    // (see OnIncomingJson) for the whole session, and a LONG-PRESS of the VOLUME-DOWN key
-+    // ends the encounter and exports the accumulated transcript directly — decoupled from
-+    // the phase machine, so it captures the real conversation regardless of SP state.
-+    // A long-press does not trigger the board's volume-down OnClick, so there is no collision.
-+    // GPIO 39 = VOLUME_DOWN, 47 = TOUCH on bread-compact-wifi (board config.h macros are not
-+    // visible in this board-agnostic file, so the pins are written literally for this board).
-+    static Button g_sp_export_button(GPIO_NUM_39, false, 1000);  // 1s long-press
-+    g_sp_export_button.OnLongPress([]() {
-+        if (!g_aivmt_sp || !g_sp_active) return;
-+        aivmt::SpTelemetry tel = g_aivmt_sp->telemetry().data();
-+        Application::GetInstance().Schedule([tel]() {
-+            ESP_LOGI("AIVMT.Hook", "manual export: %u turns", (unsigned)g_sp_transcript.size());
-+            AivmtPostEncounter(tel, "{\"trigger\":\"voldown_longpress\"}");
-+        });
+@@ -190,19 +190,21 @@ static void StartAivmtSp() {
+     // ends the encounter and exports the accumulated transcript directly — decoupled from
+     // the phase machine, so it captures the real conversation regardless of SP state.
+     // A long-press does not trigger the board's volume-down OnClick, so there is no collision.
+-    // GPIO 39 = VOLUME_DOWN, 47 = TOUCH on bread-compact-wifi (board config.h macros are not
+-    // visible in this board-agnostic file, so the pins are written literally for this board).
+-    static Button g_sp_export_button(GPIO_NUM_39, false, 1000);  // 1s long-press
++    // Single-button scheme on the BOOT key (the only button guaranteed present):
++    //   - short CLICK  -> base ToggleChatState() (start/stop the conversation; talk via VAD turns)
++    //   - LONG-PRESS   -> export the accumulated encounter (our handler below)
++    // A long-press does not fire the base boot OnClick, so the two coexist on GPIO0.
++    static Button g_sp_export_button(GPIO_NUM_0, false, 1000);  // BOOT, 1s long-press = export
+     g_sp_export_button.OnLongPress([]() {
+         if (!g_aivmt_sp || !g_sp_active) return;
+         aivmt::SpTelemetry tel = g_aivmt_sp->telemetry().data();
+         Application::GetInstance().Schedule([tel]() {
+             ESP_LOGI("AIVMT.Hook", "manual export: %u turns", (unsigned)g_sp_transcript.size());
+-            AivmtPostEncounter(tel, "{\"trigger\":\"voldown_longpress\"}");
++            AivmtPostEncounter(tel, "{\"trigger\":\"boot_longpress\"}");
+         });
      });
--    ESP_LOGI("AIVMT.Hook", "PTT button on GPIO %d (hold=talk, click=advance phase)",
--             CONFIG_AIVMT_PTT_GPIO);
-+    ESP_LOGI("AIVMT.Hook",
-+             "SP: talk = board touch button (GPIO47); export = long-press VOLUME-DOWN (GPIO39)");
+     ESP_LOGI("AIVMT.Hook",
+-             "SP: talk = board touch button (GPIO47); export = long-press VOLUME-DOWN (GPIO39)");
++             "SP: click BOOT = start/stop talk; LONG-PRESS BOOT (1s) = export encounter");
  #endif
  
      g_aivmt_sp->Start();  // -> logs "AIVMT.SpSession: enter Consent"
