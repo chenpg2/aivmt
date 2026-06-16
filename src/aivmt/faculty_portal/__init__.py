@@ -19,7 +19,6 @@ from .storage import (
     UnknownEncounterError,
     default_ratings_csv,
     default_transcript_dir,
-    rater_order_seed,
 )
 
 __all__ = [
@@ -34,5 +33,4 @@ __all__ = [
     "validate_submission",
     "default_transcript_dir",
     "default_ratings_csv",
-    "rater_order_seed",
 ]

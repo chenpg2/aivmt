@@ -201,13 +201,13 @@ def test_two_raters_score_independently(client: TestClient, env: tuple[Path, Pat
     assert raters == {"fac01", "fac02"}
 
 
-def test_randomized_order_is_deterministic_and_per_rater(client: TestClient) -> None:
-    o1a = client.get("/api/session/facA").json()["next_encounter_id"]
-    o1b = client.get("/api/session/facA").json()["next_encounter_id"]
-    assert o1a == o1b  # deterministic for a given rater
-    # Order differs across raters (counterbalancing) — at least one of several differs.
-    others = [client.get(f"/api/session/fac{i}").json()["next_encounter_id"] for i in range(6)]
-    assert any(o != o1a for o in others)
+def test_serving_order_is_fixed_canonical_for_all_raters(client: TestClient) -> None:
+    first = client.get("/api/session/facA").json()["next_encounter_id"]
+    assert client.get("/api/session/facA").json()["next_encounter_id"] == first  # deterministic
+    # Every rater starts at the SAME canonical-first encounter — the serving order matches the
+    # offline scoring packet so operator data entry is a straight sequential pass (no per-rater shuffle).
+    for i in range(6):
+        assert client.get(f"/api/session/fac{i}").json()["next_encounter_id"] == first
 
 
 def test_score_for_unknown_encounter_404(client: TestClient) -> None:

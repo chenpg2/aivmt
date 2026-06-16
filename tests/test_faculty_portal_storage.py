@@ -16,7 +16,6 @@ from aivmt.faculty_portal import (
     TranscriptStore,
     UnknownEncounterError,
     create_app,
-    rater_order_seed,
     validate_submission,
 )
 from aivmt.faculty_portal.storage import SCORE_FIELDS
@@ -59,20 +58,30 @@ def test_empty_transcript_set_serves_nothing(tmp_path: Path) -> None:
     assert body["progress"]["total"] == 0
 
 
-def test_rater_order_seed_is_stable_and_distinct() -> None:
-    assert rater_order_seed(42, "facA") == rater_order_seed(42, "facA")
-    assert rater_order_seed(42, "facA") != rater_order_seed(42, "facB")
-
-
-def test_ordered_ids_deterministic_per_rater(tmp_path: Path) -> None:
+def test_ordered_ids_is_fixed_canonical_packet_order(tmp_path: Path) -> None:
+    """All raters get ONE fixed order — by case (CANONICAL_CASE_ORDER) then encounter_id —
+    matching the offline scoring packet so operator data entry is a straight sequential pass."""
     tdir = tmp_path / "eval"
-    for eid in ("E1", "E2", "E3", "E4", "E5"):
+    # written in scrambled order across the 3 cases
+    for eid in (
+        "eval_obgyn_vaginitis_zh_01_01",
+        "eval_obgyn_ectopic_zh_01_01",
+        "eval_obgyn_aub_zh_01_00",
+        "eval_obgyn_ectopic_zh_01_00",
+        "eval_obgyn_vaginitis_zh_01_00",
+    ):
         _write_transcript(tdir, eid)
     store = TranscriptStore(transcript_dir=tdir, base_seed=42)
-    assert store.ordered_ids("facA") == store.ordered_ids("facA")
-    assert sorted(store.ordered_ids("facA")) == ["E1", "E2", "E3", "E4", "E5"]
-    # Distinct raters generally get distinct orders.
-    assert store.ordered_ids("facA") != store.ordered_ids("facZ")
+    expected = [
+        "eval_obgyn_ectopic_zh_01_00",
+        "eval_obgyn_ectopic_zh_01_01",
+        "eval_obgyn_aub_zh_01_00",
+        "eval_obgyn_vaginitis_zh_01_00",
+        "eval_obgyn_vaginitis_zh_01_01",
+    ]
+    assert store.ordered_ids("facA") == expected
+    # Every rater gets the SAME order (no per-rater permutation).
+    assert store.ordered_ids("facZ") == expected
 
 
 def test_blinded_payload_has_no_score_keys(tmp_path: Path) -> None:

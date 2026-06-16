@@ -12,18 +12,16 @@ Two read/write concerns, kept separate and side-effect-honest:
   atomic (rewrite a temp file + ``os.replace``) and refuse a duplicate
   ``(rater_id, encounter_id)`` pair unless an explicit re-score is requested.
 
-The per-rater serving order is a deterministic permutation seeded from the
-project seed combined with a stable hash of ``rater_id`` — this counterbalances
-ordering effects across raters while staying fully reproducible.
+All raters are served encounters in one FIXED canonical order (by case, then
+encounter_id) that matches the offline scoring packet, so an operator entering
+an off-network faculty's paper scores walks the web tool in lock-step with the PDF.
 """
 
 from __future__ import annotations
 
 import csv
-import hashlib
 import logging
 import os
-import random
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
@@ -42,7 +40,6 @@ __all__ = [
     "RatingStore",
     "default_transcript_dir",
     "default_ratings_csv",
-    "rater_order_seed",
     "TRANSCRIPT_DIR_ENV",
     "RATINGS_CSV_ENV",
 ]
@@ -80,14 +77,25 @@ def default_ratings_csv() -> Path:
     return Path(os.environ.get(RATINGS_CSV_ENV, "data/faculty_ratings.csv"))
 
 
-def rater_order_seed(base_seed: int, rater_id: str) -> int:
-    """Combine the project seed with a stable hash of ``rater_id``.
+#: Canonical case order for serving — MUST match the offline scoring packet
+#: (``scripts/build_scoring_packet.py`` CASE_ORDER) so the web tool serves encounters in the SAME
+#: order the off-network faculty see on paper, making operator data-entry a straight sequential pass.
+CANONICAL_CASE_ORDER: tuple[str, ...] = (
+    "obgyn_ectopic_zh_01",
+    "obgyn_aub_zh_01",
+    "obgyn_vaginitis_zh_01",
+)
 
-    ``hash()`` is salted per process, so a SHA-256 digest is used instead to keep
-    the per-rater permutation reproducible across runs and machines.
+
+def _canonical_key(encounter_id: str) -> tuple[int, str]:
+    """Sort key matching the packet: by case (CANONICAL_CASE_ORDER), then by encounter_id.
+
+    The case is parsed from the id (``eval_<case_id>_<nn>``); an unknown case sorts last but stays
+    deterministic by id.
     """
-    digest = hashlib.sha256(rater_id.encode("utf-8")).hexdigest()
-    return (base_seed ^ int(digest[:16], 16)) & 0xFFFFFFFF
+    case = encounter_id[len("eval_"):].rsplit("_", 1)[0] if encounter_id.startswith("eval_") else ""
+    rank = CANONICAL_CASE_ORDER.index(case) if case in CANONICAL_CASE_ORDER else len(CANONICAL_CASE_ORDER)
+    return (rank, encounter_id)
 
 
 @dataclass(frozen=True)
@@ -144,11 +152,15 @@ class TranscriptStore:
         return [self._encounter_id(p) for p in self._paths()]
 
     def ordered_ids(self, rater_id: str) -> list[str]:
-        """Encounter ids in this rater's deterministic randomized serving order."""
-        ids = self.encounter_ids()
-        rng = random.Random(rater_order_seed(self.base_seed, rater_id))
-        rng.shuffle(ids)
-        return ids
+        """Encounter ids in the FIXED canonical serving order (same for every rater).
+
+        The order matches the offline scoring packet (by case, then encounter_id), so an operator
+        entering an off-network faculty's paper scores walks the web tool in lock-step with the PDF.
+        ``rater_id`` is accepted for interface stability but no longer permutes the order. (Order
+        effects on independent per-transcript faculty ratings are negligible; sequential parity with
+        the packet matters more for correct data entry.)
+        """
+        return sorted(self.encounter_ids(), key=_canonical_key)
 
     def load(self, encounter_id: str) -> Transcript:
         """Load one transcript as a :class:`Transcript` (text + turns only)."""
