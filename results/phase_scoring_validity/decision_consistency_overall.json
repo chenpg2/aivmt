@@ -1,0 +1,9 @@
+{
+  "cut_score": 0.6,
+  "n": 33,
+  "raw_agreement": 0.7575757575757576,
+  "cohen_kappa": 0.5074626865671642,
+  "n_both_pass": 8,
+  "n_both_fail": 17,
+  "n_disagree": 8
+}

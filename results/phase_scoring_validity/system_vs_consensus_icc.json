@@ -1,0 +1,178 @@
+{
+  "overall": {
+    "icc2_1": {
+      "kind": "icc2_1",
+      "n": 33,
+      "k": 2,
+      "point": 0.9031255020632486,
+      "ci_lower": 0.7369754768903509,
+      "ci_upper": 0.9583552899970516,
+      "alpha": 0.05,
+      "method": "mcgraw_wong_1996_f"
+    },
+    "icc2_k": {
+      "kind": "icc2_k",
+      "n": 33,
+      "k": 2,
+      "point": 0.9490971573699547,
+      "ci_lower": 0.8485732662268018,
+      "ci_upper": 0.9787348545916756,
+      "alpha": 0.05,
+      "method": "mcgraw_wong_1996_f"
+    }
+  },
+  "set_the_stage": {
+    "icc2_1": {
+      "kind": "icc2_1",
+      "n": 33,
+      "k": 2,
+      "point": 0.3425635864889872,
+      "ci_lower": -0.08944359508484583,
+      "ci_upper": 0.7036525564458405,
+      "alpha": 0.05,
+      "method": "mcgraw_wong_1996_f"
+    },
+    "icc2_k": {
+      "kind": "icc2_k",
+      "n": 33,
+      "k": 2,
+      "point": 0.5103126435669901,
+      "ci_lower": -0.19645920802276975,
+      "ci_upper": 0.8260517131659759,
+      "alpha": 0.05,
+      "method": "mcgraw_wong_1996_f"
+    }
+  },
+  "elicit_information": {
+    "icc2_1": {
+      "kind": "icc2_1",
+      "n": 33,
+      "k": 2,
+      "point": 0.1649288861760746,
+      "ci_lower": -0.0908610418522051,
+      "ci_upper": 0.4609912388737677,
+      "alpha": 0.05,
+      "method": "mcgraw_wong_1996_f"
+    },
+    "icc2_k": {
+      "kind": "icc2_k",
+      "n": 33,
+      "k": 2,
+      "point": 0.28315700320121723,
+      "ci_lower": -0.19988372742780253,
+      "ci_upper": 0.631066397398976,
+      "alpha": 0.05,
+      "method": "mcgraw_wong_1996_f"
+    }
+  },
+  "give_information": {
+    "icc2_1": {
+      "kind": "icc2_1",
+      "n": 33,
+      "k": 2,
+      "point": 0.6674145887134327,
+      "ci_lower": -0.08060232320108447,
+      "ci_upper": 0.8972421603861608,
+      "alpha": 0.05,
+      "method": "mcgraw_wong_1996_f"
+    },
+    "icc2_k": {
+      "kind": "icc2_k",
+      "n": 33,
+      "k": 2,
+      "point": 0.8005382623267149,
+      "ci_lower": -0.17533723487690142,
+      "ci_upper": 0.9458383111236975,
+      "alpha": 0.05,
+      "method": "mcgraw_wong_1996_f"
+    }
+  },
+  "understand_perspective": {
+    "icc2_1": {
+      "kind": "icc2_1",
+      "n": 33,
+      "k": 2,
+      "point": 0.7023657602827135,
+      "ci_lower": 0.24023432852498144,
+      "ci_upper": 0.8733720096234939,
+      "alpha": 0.05,
+      "method": "mcgraw_wong_1996_f"
+    },
+    "icc2_k": {
+      "kind": "icc2_k",
+      "n": 33,
+      "k": 2,
+      "point": 0.82516434090647,
+      "ci_lower": 0.38740151437461606,
+      "ci_upper": 0.9324063828614823,
+      "alpha": 0.05,
+      "method": "mcgraw_wong_1996_f"
+    }
+  },
+  "end_encounter": {
+    "icc2_1": {
+      "kind": "icc2_1",
+      "n": 33,
+      "k": 2,
+      "point": 0.8891296419453802,
+      "ci_lower": 0.5734989112652539,
+      "ci_upper": 0.9588351438558328,
+      "alpha": 0.05,
+      "method": "mcgraw_wong_1996_f"
+    },
+    "icc2_k": {
+      "kind": "icc2_k",
+      "n": 33,
+      "k": 2,
+      "point": 0.9413114083899249,
+      "ci_lower": 0.7289473251736821,
+      "ci_upper": 0.9789850328787052,
+      "alpha": 0.05,
+      "method": "mcgraw_wong_1996_f"
+    }
+  },
+  "history_completion": {
+    "icc2_1": {
+      "kind": "icc2_1",
+      "n": 33,
+      "k": 2,
+      "point": 0.9312535438778207,
+      "ci_lower": 0.8255828115592021,
+      "ci_upper": 0.9694726049321971,
+      "alpha": 0.05,
+      "method": "mcgraw_wong_1996_f"
+    },
+    "icc2_k": {
+      "kind": "icc2_k",
+      "n": 33,
+      "k": 2,
+      "point": 0.9644031948367892,
+      "ci_lower": 0.9044594486010575,
+      "ci_upper": 0.9844997107391327,
+      "alpha": 0.05,
+      "method": "mcgraw_wong_1996_f"
+    }
+  },
+  "reasoning": {
+    "icc2_1": {
+      "kind": "icc2_1",
+      "n": 33,
+      "k": 2,
+      "point": -0.016073311445054993,
+      "ci_lower": -0.10285350951741659,
+      "ci_upper": 0.12375621462239741,
+      "alpha": 0.05,
+      "method": "mcgraw_wong_1996_f"
+    },
+    "icc2_k": {
+      "kind": "icc2_k",
+      "n": 33,
+      "k": 2,
+      "point": -0.032671766366376837,
+      "ci_lower": -0.22929033465223886,
+      "ci_upper": 0.22025455879499944,
+      "alpha": 0.05,
+      "method": "mcgraw_wong_1996_f"
+    }
+  }
+}
