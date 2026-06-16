@@ -179,19 +179,23 @@ validity claim.
 
 ## Apparatus status (not a study result)
 
-The firmware build is verified green for the exact ESP32-S3 board (ESP-IDF v5.5.2, target esp32s3;
-`aivmt_sp` compiles and links; the ~2.67 MB application image fits with ~35% slot free). The SP layer
-is now **wired into the base application, not dormant**: the patient persona renders to the OLED, a
-push-to-talk button (Kconfig-gated) drives the half-duplex turn events, the live transcript is
-accumulated from the device's STT/TTS stream, and a finished encounter is exported via HTTP POST to a
-new `POST /aivmt/encounter` endpoint on the self-hosted server (which archives it locally and is
-configured to serve the same local open-weight model used for scoring). The host-side state-machine
-unit test passes and the server endpoint is unit-tested (valid/200, malformed/4xx, path-traversal
-rejected, atomic write). What remains is **physical**: the device is **not yet flashed and on-device
-QA is not yet run** — three values must be set on the hardware (PTT GPIO, server URL, audio-turn
-timing) and four QA gates passed (PTT no-echo on the no-AEC board, OLED persona, offline operation,
-real-speech WER ≤ ~20%), per `firmware/FLASH_AND_QA.md`. The embodiment study (SQ2) is therefore
-`[SQ2 embodiment result: pending — firmware wired + build-verified; device not yet flashed/QA'd]`.
+The embodied device is **flashed and the full device↔server↔local-model loop is demonstrated
+end-to-end on the physical ESP32-S3** (ESP-IDF v5.5.2; ~2.67 MB image, ~35% slot free). A complete
+standardized-patient encounter was run on hardware: the student speaks (BOOT-button conversation,
+WebRTC-VAD turn segmentation), the self-hosted server transcribes with local FunASR, a local
+open-weight LLM (Ollama) answers **in the patient's persona and grounded in the case**, the reply is
+voiced back, the live transcript is accumulated on the device, and a BOOT long-press exports the
+encounter via `POST /aivmt/encounter`, which the server archives locally as scoreable JSON
+(`firmware/demo_encounter_device.json`: a 12-turn zh OB/GYN ectopic-pregnancy history-take —
+6-week amenorrhea, unprotected intercourse, vaginal bleeding, RLQ pain, dizziness — `HTTP 200`,
+`participant_code=device01`). The host state-machine test and the server endpoint unit tests pass.
+**Honest gaps remaining (refinements, not blockers):** TTS is currently cloud EdgeTTS — a local TTS
+is needed for a *fully* offline LMIC deployment (ASR and LLM are already local); the SP phase-machine
+telemetry (encounter duration, per-phase timing) is not yet captured in this button-minimal flow; the
+OLED persona panel and a formal real-speech WER measurement are not yet run; and ASR shows the
+expected zh homophone slips (e.g. 末次→末世) that the ASR-robustness lane quantifies. The embodiment
+study (SQ2) is therefore `[SQ2 embodiment result: device operational + loop demonstrated; controlled
+device-vs-screen study pending]`.
 
 ## An earlier English synthetic pilot (superseded; reported for transparency)
 

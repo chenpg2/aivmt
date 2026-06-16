@@ -1,0 +1,63 @@
+{
+  "participant_code": "device01",
+  "case_id": "obgyn_ectopic_zh_01",
+  "telemetry": {
+    "n_student_questions": 5,
+    "n_voluntary_repeats": 0,
+    "duration_seconds": 0
+  },
+  "transcript": [
+    {
+      "role": "student",
+      "text": "你今天哪里不舒服？"
+    },
+    {
+      "role": "patient",
+      "text": "肚子疼"
+    },
+    {
+      "role": "student",
+      "text": "怎么腾法呢？"
+    },
+    {
+      "role": "patient",
+      "text": "就是右下腹隐痛"
+    },
+    {
+      "role": "patient",
+      "text": "今天加重了，站起来时还有点头晕，有少量暗红色的阴道流血"
+    },
+    {
+      "role": "student",
+      "text": "末世月经什么时候呢？"
+    },
+    {
+      "role": "patient",
+      "text": "我上一次月经是大概六周前吧"
+    },
+    {
+      "role": "student",
+      "text": "最近有没有同房？"
+    },
+    {
+      "role": "patient",
+      "text": "有的"
+    },
+    {
+      "role": "patient",
+      "text": "我们用避孕套，但有时候也会没用"
+    },
+    {
+      "role": "student",
+      "text": "有没有验过孕？"
+    },
+    {
+      "role": "patient",
+      "text": "没有验过孕"
+    }
+  ],
+  "meta": {
+    "trigger": "boot_longpress"
+  },
+  "received_at": "2026-06-17T00:25:45+0800"
+}
