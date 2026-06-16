@@ -1,0 +1,51 @@
+{
+  "frozen_on": "2026-06-16",
+  "n_transcripts": 33,
+  "generator": {
+    "QUALITY_TIERS": [
+      0.2,
+      0.4,
+      0.6,
+      0.8,
+      1.0
+    ],
+    "per_case": 11,
+    "seed": 42
+  },
+  "set_sha256": "c3739a43317d9b08ddaef94b9f94db84c630af5506e111c01a8ac72e28d8c39b",
+  "files": {
+    "eval_obgyn_aub_zh_01_00.json": "69af5759187ad330f34304b841561076c810338c55acd60a7c1eb7de9af024d4",
+    "eval_obgyn_aub_zh_01_01.json": "7651585a1cb15ad04a3a28914051f54ff145f9748ba2f3978e5b5eee5c37896a",
+    "eval_obgyn_aub_zh_01_02.json": "c5f15a06075e20219a90309715965c8399826ea7bc2955778f2be9314bf6cd83",
+    "eval_obgyn_aub_zh_01_03.json": "52081b46fbe9b5417e20df86622ac80efce3d8a7ad640fc9dfa6d494d9d08700",
+    "eval_obgyn_aub_zh_01_04.json": "26aa26680c7154b24d86520f27ad2f33d4691ecaab30fd8d80206c15c8fb5171",
+    "eval_obgyn_aub_zh_01_05.json": "bafe19593af81c78f8bba929d99c762e202915ad419199d87cef671cef3f4d2d",
+    "eval_obgyn_aub_zh_01_06.json": "19bcc9332b9de74266d2fc0aed9eebde694936b5a6de02a51ea0ff883e379f63",
+    "eval_obgyn_aub_zh_01_07.json": "94a3ce863c7d7c2dcafb2480fab88b9e6ce12e99668b91f00b7ac554ce02cd7e",
+    "eval_obgyn_aub_zh_01_08.json": "42786534ae0f392cea0ef123972bbf1a6aca19c366a73855ca84ff290d970396",
+    "eval_obgyn_aub_zh_01_09.json": "98f2fcad4c66ae8bf8f4a9af3136a1c47881c8a3394527911d22acc66d274c0c",
+    "eval_obgyn_aub_zh_01_10.json": "e7840faeb2a8709d2168fc45233b19098823434158cd603c1aeae899a860802f",
+    "eval_obgyn_ectopic_zh_01_00.json": "e081c15e179f43a3a620efd1a7a4e019c76f9fb103e5ada6545fb4a7f2836290",
+    "eval_obgyn_ectopic_zh_01_01.json": "a5df528a6f0df658ac6f1638b592460d2a6cba969a5f5c604ec3bccb5283cf9d",
+    "eval_obgyn_ectopic_zh_01_02.json": "161b96dfd1a9baa89189e77ac35b99eb7db1e0d44b1be55134e1cafd1e891742",
+    "eval_obgyn_ectopic_zh_01_03.json": "76e1d51059ba1b70779809621f1c7044baa59770dbbdc7869aeaf0c5a900dfaf",
+    "eval_obgyn_ectopic_zh_01_04.json": "dd12085bfd54652fcce936a9d9632f443a82556f207429790d3e93cd67596bc2",
+    "eval_obgyn_ectopic_zh_01_05.json": "22c221d981cb3416afc20ad3bb9fdab5cd7f5cfbdbca60e85f257efcb56440e4",
+    "eval_obgyn_ectopic_zh_01_06.json": "0dcb6ed8d0be77d95eb271b105216bbb33c3a71971ccca703eb0d17a20a3ed21",
+    "eval_obgyn_ectopic_zh_01_07.json": "8ef45080b22df78a586cbfd3443ae9229bc525d8a2a9ceeb9157602c163087eb",
+    "eval_obgyn_ectopic_zh_01_08.json": "d25c623b4b1ca3f691c23e2f4e17dd5793224de2bb512bc34c8d32d0c4f25b9a",
+    "eval_obgyn_ectopic_zh_01_09.json": "478f5361fe281b369b747c8576925e0d3192e1bf8efe27694ec7d7a7abdfe2f6",
+    "eval_obgyn_ectopic_zh_01_10.json": "a42be0ee630b1ae92aedaa4cb2981422fad3fcffac377f2d4f607f82346ac1e5",
+    "eval_obgyn_vaginitis_zh_01_00.json": "5931d6e1acaa1614be4da83ba71a51951384a11e9b92658e9b9a56864467c365",
+    "eval_obgyn_vaginitis_zh_01_01.json": "d1f868b31d6a3b160ef35728e1500587b33ce5a50037603f5462d95b66070f26",
+    "eval_obgyn_vaginitis_zh_01_02.json": "8639eed8d201c9a5169ceae307b2dfd96982022c1ba7574aef4cbc6d98827f15",
+    "eval_obgyn_vaginitis_zh_01_03.json": "f89fd205f3f7172ea1c63e66fa1c83ca09fc2a41c53284ee384c7173072a2da3",
+    "eval_obgyn_vaginitis_zh_01_04.json": "fb0ad87bb49604ad5c8b6d95b10aad24c41e3c65acb8d536a8761c1972cd6ff0",
+    "eval_obgyn_vaginitis_zh_01_05.json": "4f19c899e1a58ac1e41d28a3de2d8e518d491fcb8a6a84ed98e711a4f08f9097",
+    "eval_obgyn_vaginitis_zh_01_06.json": "2969cc5397843af83013386f82d2b11d9e9377ab59765dadf400bb26fe27035b",
+    "eval_obgyn_vaginitis_zh_01_07.json": "0f1c960240579a779ccea7ca8d073d20382961b96deeff461ca873223b16db05",
+    "eval_obgyn_vaginitis_zh_01_08.json": "7c194b6eb70102989e10f73fd23eb8d87103924beeed3ce4d2e611c535f0b95b",
+    "eval_obgyn_vaginitis_zh_01_09.json": "95b953c48e7d26b0490addbcb7c396f6285f91cdeedbff8b51b250126cbbd1ff",
+    "eval_obgyn_vaginitis_zh_01_10.json": "193295be0c27d186345a00beda09068b8ce1884c8c124de9f28064359e34618f"
+  }
+}

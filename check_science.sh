@@ -24,4 +24,9 @@ echo "[science] multiple-testing / non-inferiority declared"
 grep -qiE "non-inferiority|FDR|Bonferroni|BH|correction|adjust" HYPOTHESIS.md \
   || echo "WARN: no multiple-testing / non-inferiority statement found"
 
+echo "[science] eval set frozen (no drift once scoring starts)"
+if [ -f data/eval_transcripts.FROZEN.json ]; then
+  uv run python scripts/check_evalset_frozen.py || fail=1
+fi
+
 if [ "$fail" -eq 0 ]; then echo "check_science: PASS"; else echo "check_science: FAIL"; exit 1; fi
