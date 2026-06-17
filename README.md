@@ -1,6 +1,6 @@
 <div align="center">
 
-# AIVMT
+# AIVMT (AI Vitual Medical Teacher)
 ### A Low-Cost Embodied Standardized Patient for Medical Education
 
 An open, self-hosted voice **standardized patient (SP)** on a **≈US$15–20 ESP32-S3** device: a student
