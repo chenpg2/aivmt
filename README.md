@@ -257,7 +257,7 @@ aivmt/
 
 ## License & citation
 
-Research code accompanying a manuscript **under review** at *npj Digital Medicine*.
+Research code accompanying a manuscript **submitted to** *npj Digital Medicine*.
 © 2026 the AIVMT authors. **All rights reserved pending publication**; an open-source license will be
 applied on acceptance. Our firmware layer (`firmware/components/aivmt_sp/`) builds on
 [`xiaozhi-esp32`](https://github.com/78/xiaozhi-esp32) and our server endpoint
@@ -267,7 +267,7 @@ their upstream licenses govern those bases. This repository redistributes neithe
 only our own additions.
 
 If you reference this work before the paper appears, please cite it as *“AIVMT: a low-cost embodied
-standardized patient for medical education (manuscript under review, 2026)”* and open an issue to
+standardized patient for medical education (manuscript submitted, 2026)”* and open an issue to
 coordinate.
 
 ## Acknowledgements
