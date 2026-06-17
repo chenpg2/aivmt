@@ -243,8 +243,9 @@ citation and BibTeX entry will be added on acceptance.
 
 ## License
 
-Research code accompanying a manuscript **submitted to** *npj Digital Medicine*. © 2026 the AIVMT
-authors. **All rights reserved pending publication**; an open-source license will be applied on
+Research code accompanying a manuscript **submitted to** *npj Digital Medicine*. 
+© 2026 the AIVMT authors. 
+**All rights reserved pending publication**; an open-source license will be applied on
 acceptance.
 
 ## Acknowledgements
