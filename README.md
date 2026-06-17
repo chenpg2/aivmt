@@ -52,7 +52,7 @@ how to combine them with a fresh upstream checkout:
 | # | Track | Our code (in **this** repo) | Combine with (upstream, clone separately) |
 |---|-------|-----------------------------|--------------------------------------------|
 | ② | **Infrastructure** (server) | [`firmware/server_patches/`](firmware/server_patches/) — `aivmt_handler.py` (the de-identified `POST /aivmt/encounter` endpoint) + route patch | [xinnan-tech/xiaozhi-esp32-server](https://github.com/xinnan-tech/xiaozhi-esp32-server) |
-| ① | **Firmware** (device) | [`firmware/components/aivmt_sp/`](firmware/components/aivmt_sp/) — the SP layer (state machine, BOOT-button turn-taking, OLED persona, telemetry, export) + [`firmware/main_patches/`](firmware/main_patches/) integration patch | [78/xiaozhi-esp32](https://github.com/78/xiaozhi-esp32) |
+| ① | **Firmware** (device) | **our original work** — [`firmware/components/aivmt_sp/`](firmware/components/aivmt_sp/), the SP layer (~440 lines: state machine, BOOT-button turn-taking, OLED persona, telemetry, export) + [`firmware/main_patches/`](firmware/main_patches/) integration (~230 lines) | [78/xiaozhi-esp32](https://github.com/78/xiaozhi-esp32) — base audio / display / Wi-Fi / protocol |
 | ③ | **Supporting software** (analysis) | [`src/aivmt/`](src/aivmt/) + [`harness/`](harness/) — case authoring, persona, scoring pipeline, faculty portal, validation | — (entirely ours) |
 
 > The **hardware package** (board, BOM, wiring, flash/QA runbook, rollback) is documented in
@@ -120,8 +120,12 @@ Note your machine's **LAN IP** (`ipconfig getifaddr en0` on macOS) — the devic
 
 ### ① Firmware — flash the device
 
-The device firmware is **our `aivmt_sp` component dropped into the upstream base, plus our
-integration patch** — then set the server URL, build, and flash. Hardware package:
+**The firmware SP layer is our own work** — the [`aivmt_sp`](firmware/components/aivmt_sp/) component
+(~440 lines: SP state machine, BOOT-button turn-taking, OLED persona, telemetry, encounter export)
+plus ~230 lines of integration — **developed on top of** the open-source
+[`78/xiaozhi-esp32`](https://github.com/78/xiaozhi-esp32) base, which supplies the audio / display /
+Wi-Fi / protocol stack. Deploying = drop our component into a fresh upstream checkout, apply our
+integration patch, set the server URL, then build and flash. Hardware package:
 **[docs/HARDWARE.md](docs/HARDWARE.md)** · flash + on-device QA runbook:
 **[firmware/FLASH_AND_QA.md](firmware/FLASH_AND_QA.md)** · detailed integration:
 **[firmware/INTEGRATION.md](firmware/INTEGRATION.md)**.
