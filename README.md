@@ -40,18 +40,18 @@ patient/persona content and student speech never leave the building.
 
 ## Components & repositories
 
-AIVMT ships as **three deployable tracks**, in three repositories:
+**This repository is the project — everything in it is our own work.** AIVMT runs on two excellent
+open-source bases, but we do **not** redistribute them; we keep only our additions here and show you
+how to combine them with a fresh upstream checkout:
 
-| # | Track | Repository | What it is |
-|---|-------|------------|------------|
-| ② | **Infrastructure** (server) | **[xiaozhi-esp32-server-aivmt](https://github.com/chenpg2/xiaozhi-esp32-server-aivmt)** · branch `aivmt-encounter-endpoint` | Self-hosted server (FunASR ASR + Ollama patient LLM + TTS + Silero VAD) with our additive, de-identified `POST /aivmt/encounter` endpoint. The “brain.” |
-| ① | **Firmware** (device) | **[xiaozhi-esp32-aivmt](https://github.com/chenpg2/xiaozhi-esp32-aivmt)** · branch `aivmt-hardware-leg` | The `xiaozhi-esp32` base with the `aivmt_sp` SP layer already wired in: BOOT-button turn-taking, OLED persona, telemetry, encounter export. **Clone and build — no patching.** |
-| ③ | **Supporting software** (analysis) | **[aivmt](https://github.com/chenpg2/aivmt)** *(this repo)* | Case-authoring portal + persona compiler, the automated scoring pipeline, the faculty-scoring portal, and the validation harness (ICC / QWK / Bland–Altman / G-theory). |
+| # | Track | Our code (in **this** repo) | Combine with (upstream, clone separately) |
+|---|-------|-----------------------------|--------------------------------------------|
+| ② | **Infrastructure** (server) | [`firmware/server_patches/`](firmware/server_patches/) — `aivmt_handler.py` (the de-identified `POST /aivmt/encounter` endpoint) + route patch | [xinnan-tech/xiaozhi-esp32-server](https://github.com/xinnan-tech/xiaozhi-esp32-server) |
+| ① | **Firmware** (device) | [`firmware/components/aivmt_sp/`](firmware/components/aivmt_sp/) — the SP layer (state machine, BOOT-button turn-taking, OLED persona, telemetry, export) + [`firmware/main_patches/`](firmware/main_patches/) integration patch | [78/xiaozhi-esp32](https://github.com/78/xiaozhi-esp32) |
+| ③ | **Supporting software** (analysis) | [`src/aivmt/`](src/aivmt/) + [`harness/`](harness/) — case authoring, persona, scoring pipeline, faculty portal, validation | — (entirely ours) |
 
 > The **hardware package** (board, BOM, wiring, flash/QA runbook, rollback) is documented in
 > [docs/HARDWARE.md](docs/HARDWARE.md) and [firmware/FLASH_AND_QA.md](firmware/FLASH_AND_QA.md).
-> This repo also vendors the firmware component + server patches under [`firmware/`](firmware/) as a
-> self-contained source-of-truth, so the system is reproducible even without the two forks.
 
 ---
 
@@ -72,9 +72,15 @@ The server runs FunASR (ASR), an Ollama patient LLM, and TTS, and exposes the en
 Full guide: **[docs/SERVER.md](docs/SERVER.md)**.
 
 ```bash
-# 1. Get the server fork (the AIVMT branch is the default branch)
-git clone https://github.com/chenpg2/xiaozhi-esp32-server-aivmt.git
-cd xiaozhi-esp32-server-aivmt/main/xiaozhi-server
+# 0. Clone THIS repo first — our additions live here. Call its path $AIVMT:
+#    git clone https://github.com/chenpg2/aivmt.git && export AIVMT="$PWD/aivmt"
+
+# 1. Clone the upstream server, then add our /aivmt/encounter endpoint
+git clone https://github.com/xinnan-tech/xiaozhi-esp32-server.git
+cd xiaozhi-esp32-server
+cp "$AIVMT/firmware/server_patches/aivmt_handler.py" main/xiaozhi-server/core/api/
+git apply "$AIVMT/firmware/server_patches/http_server.route.patch"   # registers POST /aivmt/encounter
+cd main/xiaozhi-server
 
 # 2. Python 3.10 environment + dependencies
 python3.10 -m venv .venv && source .venv/bin/activate
@@ -109,18 +115,23 @@ Note your machine's **LAN IP** (`ipconfig getifaddr en0` on macOS) — the devic
 
 ### ① Firmware — flash the device
 
-The firmware fork already has the `aivmt_sp` layer wired into the base, so this is **clone → set
-server URL → build → flash**. Hardware package: **[docs/HARDWARE.md](docs/HARDWARE.md)** · full
-flash + on-device QA runbook: **[firmware/FLASH_AND_QA.md](firmware/FLASH_AND_QA.md)**.
+The device firmware is **our `aivmt_sp` component dropped into the upstream base, plus our
+integration patch** — then set the server URL, build, and flash. Hardware package:
+**[docs/HARDWARE.md](docs/HARDWARE.md)** · flash + on-device QA runbook:
+**[firmware/FLASH_AND_QA.md](firmware/FLASH_AND_QA.md)** · detailed integration:
+**[firmware/INTEGRATION.md](firmware/INTEGRATION.md)**.
 
 ```bash
 # 1. Install ESP-IDF v5.5.2 and source its environment
 #    https://docs.espressif.com/projects/esp-idf/en/v5.5.2/esp32s3/get-started/
 . $HOME/esp/esp-idf/export.sh
 
-# 2. Get the firmware fork (the AIVMT branch is the default branch)
-git clone --recursive https://github.com/chenpg2/xiaozhi-esp32-aivmt.git
-cd xiaozhi-esp32-aivmt
+# 2. Clone the upstream base, drop in our component, apply our integration patch
+#    ($AIVMT = your clone of THIS repo, as above)
+git clone --recursive https://github.com/78/xiaozhi-esp32.git
+cd xiaozhi-esp32
+cp -r "$AIVMT/firmware/components/aivmt_sp" components/
+git apply "$AIVMT/firmware/main_patches/application.integration.patch"
 
 # 3. Target + configure: set the encounter POST URL to YOUR server's LAN IP
 idf.py set-target esp32s3
@@ -134,9 +145,8 @@ idf.py build flash monitor -p /dev/cu.usbserial-XXXX
 
 On the device: **short BOOT click = talk**, **1-second long-press = export the encounter**. If a
 build misbehaves, the device is fully recoverable from a saved flash image — see
-[docs/HARDWARE.md](docs/HARDWARE.md#recovery--rollback). *Advanced:* to apply the `aivmt_sp`
-component to your own `xiaozhi-esp32` checkout instead of using the fork, see
-[firmware/INTEGRATION.md](firmware/INTEGRATION.md).
+[docs/HARDWARE.md](docs/HARDWARE.md#recovery--rollback). The full component-by-component
+integration walk-through is in [firmware/INTEGRATION.md](firmware/INTEGRATION.md).
 
 ---
 
@@ -244,10 +254,12 @@ aivmt/
 
 Research code accompanying a manuscript **under review** at *npj Digital Medicine*.
 © 2026 the AIVMT authors. **All rights reserved pending publication**; an open-source license will be
-applied on acceptance. The firmware fork derives from
-[`xiaozhi-esp32`](https://github.com/78/xiaozhi-esp32) and the server fork from
+applied on acceptance. Our firmware layer (`firmware/components/aivmt_sp/`) builds on
+[`xiaozhi-esp32`](https://github.com/78/xiaozhi-esp32) and our server endpoint
+(`firmware/server_patches/`) builds on
 [`xiaozhi-esp32-server`](https://github.com/xinnan-tech/xiaozhi-esp32-server), both open source —
-their upstream licenses govern those bases.
+their upstream licenses govern those bases. This repository redistributes neither base; it contains
+only our own additions.
 
 If you reference this work before the paper appears, please cite it as *“AIVMT: a low-cost embodied
 standardized patient for medical education (manuscript under review, 2026)”* and open an issue to

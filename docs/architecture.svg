@@ -23,8 +23,8 @@
   <rect x="20" y="86" width="880" height="104" rx="12" fill="#E6F4EC" stroke="#bfe3d0"/>
   <text x="38" y="112" font-size="13" font-weight="700" fill="#1b4d39">① FIRMWARE</text>
   <text x="38" y="130" font-size="11" fill="#2E7D5B">the device</text>
-  <text x="38" y="147" font-size="10" fill="#3f7d63">repo:</text>
-  <text x="38" y="160" font-size="10" fill="#3f7d63">xiaozhi-esp32-aivmt</text>
+  <text x="38" y="148" font-size="9.5" fill="#3f7d63">in this repo:</text>
+  <text x="38" y="160" font-size="9.5" fill="#3f7d63">firmware/aivmt_sp</text>
 
   <!-- student -->
   <circle cx="246" cy="134" r="23" fill="#ffffff" stroke="#2E7D5B" stroke-width="1.5"/>
@@ -46,9 +46,9 @@
   <rect x="20" y="206" width="880" height="174" rx="12" fill="#E7F0FA" stroke="#c4dcf2"/>
   <text x="38" y="232" font-size="13" font-weight="700" fill="#16395f">② INFRASTRUCTURE</text>
   <text x="38" y="250" font-size="11" fill="#2563A8">self-hosted server</text>
-  <text x="38" y="267" font-size="10" fill="#3f6592">repo:</text>
-  <text x="38" y="280" font-size="10" fill="#3f6592">xiaozhi-esp32-</text>
-  <text x="38" y="293" font-size="10" fill="#3f6592">server-aivmt</text>
+  <text x="38" y="270" font-size="9.5" fill="#3f6592">in this repo:</text>
+  <text x="38" y="282" font-size="9.5" fill="#3f6592">firmware/</text>
+  <text x="38" y="294" font-size="9.5" fill="#3f6592">server_patches/</text>
 
   <!-- server container -->
   <rect x="300" y="224" width="420" height="138" rx="10" fill="#ffffff" stroke="#2563A8" stroke-width="1.6"/>
@@ -81,7 +81,8 @@
   <rect x="20" y="396" width="880" height="180" rx="12" fill="#F0EAF8" stroke="#dccdf0"/>
   <text x="38" y="422" font-size="13" font-weight="700" fill="#3f2c63">③ SUPPORTING</text>
   <text x="38" y="439" font-size="13" font-weight="700" fill="#3f2c63">SOFTWARE</text>
-  <text x="38" y="457" font-size="10" fill="#6d4aa3">repo: aivmt</text>
+  <text x="38" y="457" font-size="9.5" fill="#6d4aa3">in this repo:</text>
+  <text x="38" y="469" font-size="9.5" fill="#6d4aa3">src/aivmt</text>
 
   <!-- C1 case authoring -->
   <rect x="170" y="430" width="196" height="92" rx="10" fill="#ffffff" stroke="#6D4AA3" stroke-width="1.6"/>
