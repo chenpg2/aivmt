@@ -16,6 +16,11 @@ Intelligence.”**
 > consensus at **ICC(2,1) = 0.903 (95% CI 0.737–0.958)**, against an **inter-faculty ceiling of
 > 0.765**. Every number in this repo traces to a registered artifact under [`results/`](results/).
 
+<p align="center">
+  <img src="docs/demo.jpg" alt="The AIVMT device: an ESP32-S3 (N16R8) module on a carrier board with an OLED patient display and a BOOT button, powered over USB-C on a desk." width="460">
+  <br><em>The AIVMT device — a ≈US$15–20 ESP32-S3 (N16R8) standardized patient: OLED persona display + single-BOOT-button control, fully self-hosted.</em>
+</p>
+
 ---
 
 ## How it works
