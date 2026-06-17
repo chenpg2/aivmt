@@ -38,21 +38,23 @@ and it keeps transcripts clean. A **1-second long-press** exports the full trans
 the server's `POST /aivmt/encounter` endpoint, which archives a de-identified encounter. The
 **supporting-software** layer then scores that encounter (history checklist + SEGUE communication +
 out-loud reasoning) into a `CompetencyScore` + `Feedback`, and the validation harness compares those
-scores against blinded faculty ratings. Everything runs **on your LAN — no cloud fallback** — so
-patient/persona content and student speech never leave the building.
+scores against blinded faculty ratings. The VAD, speech recognition (**FunASR**), and the **patient
+LLM (Ollama)** all run on your LAN — the student's speech and the model's reasoning never leave the
+building, and the device has no cloud fallback. (The one cloud call in the default config is **TTS**
+for the patient's synthesized voice; swap it for a local TTS engine for fully offline operation —
+see [docs/SERVER.md](docs/SERVER.md).)
 
 ---
 
 ## Components & repositories
 
-**This repository is the project — everything in it is our own work.** AIVMT runs on two excellent
-open-source bases, but we do **not** redistribute them; we keep only our additions here and show you
-how to combine them with a fresh upstream checkout:
+AIVMT builds on two open-source bases that we **reference rather than redistribute** — clone them
+separately and combine with the code in this repo:
 
 | # | Track | Our code (in **this** repo) | Combine with (upstream, clone separately) |
 |---|-------|-----------------------------|--------------------------------------------|
 | ② | **Infrastructure** (server) | [`firmware/server_patches/`](firmware/server_patches/) — `aivmt_handler.py` (the de-identified `POST /aivmt/encounter` endpoint) + route patch | [xinnan-tech/xiaozhi-esp32-server](https://github.com/xinnan-tech/xiaozhi-esp32-server) |
-| ① | **Firmware** (device) | **our original work** — [`firmware/components/aivmt_sp/`](firmware/components/aivmt_sp/), the SP layer (~440 lines: state machine, BOOT-button turn-taking, OLED persona, telemetry, export) + [`firmware/main_patches/`](firmware/main_patches/) integration (~230 lines) | [78/xiaozhi-esp32](https://github.com/78/xiaozhi-esp32) — base audio / display / Wi-Fi / protocol |
+| ① | **Firmware** (device) | [`firmware/components/aivmt_sp/`](firmware/components/aivmt_sp/) — the SP layer (state machine, BOOT-button turn-taking, OLED persona, telemetry, export) + [`firmware/main_patches/`](firmware/main_patches/) integration patch | [78/xiaozhi-esp32](https://github.com/78/xiaozhi-esp32) |
 | ③ | **Supporting software** (analysis) | [`src/aivmt/`](src/aivmt/) + [`harness/`](harness/) — case authoring, persona, scoring pipeline, faculty portal, validation | — (entirely ours) |
 
 > The **hardware package** (board, BOM, wiring, flash/QA runbook, rollback) is documented in
@@ -120,12 +122,9 @@ Note your machine's **LAN IP** (`ipconfig getifaddr en0` on macOS) — the devic
 
 ### ① Firmware — flash the device
 
-**The firmware SP layer is our own work** — the [`aivmt_sp`](firmware/components/aivmt_sp/) component
-(~440 lines: SP state machine, BOOT-button turn-taking, OLED persona, telemetry, encounter export)
-plus ~230 lines of integration — **developed on top of** the open-source
-[`78/xiaozhi-esp32`](https://github.com/78/xiaozhi-esp32) base, which supplies the audio / display /
-Wi-Fi / protocol stack. Deploying = drop our component into a fresh upstream checkout, apply our
-integration patch, set the server URL, then build and flash. Hardware package:
+The device firmware is the [`aivmt_sp`](firmware/components/aivmt_sp/) component plus an integration
+patch applied to the upstream base — drop the component into a fresh upstream checkout, apply the
+patch, set the server URL, then build and flash. Hardware package:
 **[docs/HARDWARE.md](docs/HARDWARE.md)** · flash + on-device QA runbook:
 **[firmware/FLASH_AND_QA.md](firmware/FLASH_AND_QA.md)** · detailed integration:
 **[firmware/INTEGRATION.md](firmware/INTEGRATION.md)**.
@@ -276,6 +275,9 @@ coordinate.
 
 ## Acknowledgements
 
-Built on the excellent open-source [`xiaozhi-esp32`](https://github.com/78/xiaozhi-esp32) firmware
-and [`xiaozhi-esp32-server`](https://github.com/xinnan-tech/xiaozhi-esp32-server), with on-device
-ASR by **FunASR** and a self-hosted patient LLM via **Ollama**.
+AIVMT's own contributions are the `aivmt_sp` standardized-patient **firmware** layer and the
+`/aivmt/encounter` **server** endpoint, developed on top of two excellent open-source projects that
+provide the device and backend foundations: the
+[`xiaozhi-esp32`](https://github.com/78/xiaozhi-esp32) firmware and
+[`xiaozhi-esp32-server`](https://github.com/xinnan-tech/xiaozhi-esp32-server) server. On-device ASR
+is by **FunASR**, and the self-hosted patient LLM runs via **Ollama**.
