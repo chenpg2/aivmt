@@ -38,6 +38,11 @@ results/*.log
 # localized double-click launchers (the equivalent English commands live in docs/USAGE.md)
 *.command
 
+# manuscript / submission — NEVER expose pre-publication content
+paper/
+submission/
+manuscript/
+
 # real study data — UNPUBLISHED empirical core; NEVER commit (any name, any dir)
 faculty_ratings*.csv
 data/_faculty_data_backup/
