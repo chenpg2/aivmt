@@ -12,9 +12,13 @@ uv.lock
 data/transcripts/
 data/encounters/
 data/encounters_*/
+# device-archived real-student encounters (server AIVMT_ENCOUNTER_DIR) — real data, never commit
+data/aivmt_encounters/
 # generated faculty-rating sheets (runtime artifact; the schema lives in code)
 data/faculty_rating_sheet.csv
 data/faculty_ratings.csv
+# real student questionnaire responses — real participant data, never commit
+data/student_questionnaire*.csv
 outputs/
 *.wav
 *.bin
@@ -48,3 +52,18 @@ faculty_ratings*.csv
 data/_faculty_data_backup/
 data/_pre_freeze_backup/
 data/*_backup/
+
+# --- real-student empirical core (UNPUBLISHED) — never commit (added 2026-07-04) ---
+# blinded faculty ratings of real students (primary reference data)
+data/faculty_blind_rating.csv
+*blind_rating*.csv
+# real-student validity-suite + questionnaire outputs (the paper's empirical numbers, pre-publication)
+results/phase_scoring_validity_real/
+results/*_real/
+results/phase_questionnaire/
+
+# low-resource manuscript package — pre-publication content, never commit (policy consistent with submission/)
+submission_lowresource/
+
+# scratch / working files
+temp/
