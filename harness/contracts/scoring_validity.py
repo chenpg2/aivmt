@@ -58,7 +58,8 @@ def check_scoring_validity_inputs(encounters_dir: PathLike, faculty_csv: PathLik
         assert data["encounter_id"] not in enc_ids, f"duplicate encounter_id {data['encounter_id']}"
         enc_ids.add(data["encounter_id"])
 
-    with fac_path.open(encoding="utf-8") as fh:
+    # utf-8-sig tolerates the BOM that Excel's "CSV UTF-8" export prepends
+    with fac_path.open(encoding="utf-8-sig") as fh:
         rows = list(csv.DictReader(fh))
     assert rows, f"empty faculty csv: {fac_path}"
     missing_cols = _REQUIRED_FACULTY_COLUMNS - set(rows[0].keys())

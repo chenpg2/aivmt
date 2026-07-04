@@ -85,7 +85,8 @@ class PhaseScoringValidity(Phase):
     def _load_faculty_rows(fac_csv: Path) -> list[dict[str, object]]:
         import csv
 
-        with fac_csv.open(encoding="utf-8") as fh:
+        # utf-8-sig tolerates the BOM that Excel's "CSV UTF-8" export prepends
+        with fac_csv.open(encoding="utf-8-sig") as fh:
             return [dict(row) for row in csv.DictReader(fh)]
 
     def run(self) -> dict:

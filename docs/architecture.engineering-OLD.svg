@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 660" role="img"
+     aria-labelledby="ttl desc" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <title id="ttl">AIVMT system architecture</title>
+  <desc id="desc">A student speaks to an ESP32-S3 device (firmware track); the device streams audio over WebSocket to a self-hosted server (infrastructure track) where FunASR transcribes, an Ollama LLM plays the patient, and TTS speaks back; a long-press exports the encounter via POST /aivmt/encounter; the supporting-software track scores the encounter and validates it against faculty (overall ICC 0.903).</desc>
+
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#64748b"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#2E7D5B"/>
+    </marker>
+  </defs>
+
+  <!-- background -->
+  <rect x="6" y="6" width="908" height="648" rx="16" fill="#ffffff" stroke="#e5e7eb" stroke-width="1.5"/>
+
+  <!-- title -->
+  <text x="460" y="42" text-anchor="middle" font-size="23" font-weight="700" fill="#111827">AIVMT — System Architecture</text>
+  <text x="460" y="64" text-anchor="middle" font-size="13" fill="#6b7280">Self-hosted, local-only standardized-patient platform · three deployable tracks</text>
+
+  <!-- ============ BAND A : FIRMWARE ============ -->
+  <rect x="20" y="86" width="880" height="104" rx="12" fill="#E6F4EC" stroke="#bfe3d0"/>
+  <text x="38" y="112" font-size="13" font-weight="700" fill="#1b4d39">① FIRMWARE</text>
+  <text x="38" y="130" font-size="11" fill="#2E7D5B">the device</text>
+  <text x="38" y="146" font-size="9.5" fill="#3f7d63">in this repo:</text>
+  <text x="38" y="158" font-size="9.5" fill="#3f7d63">firmware/aivmt_sp</text>
+  <text x="38" y="171" font-size="8.5" fill="#7aa890">on xiaozhi-esp32 base</text>
+
+  <!-- student -->
+  <circle cx="246" cy="134" r="23" fill="#ffffff" stroke="#2E7D5B" stroke-width="1.5"/>
+  <circle cx="246" cy="126" r="7" fill="#2E7D5B"/>
+  <path d="M232 149 a14 12 0 0 1 28 0 z" fill="#2E7D5B"/>
+  <text x="246" y="172" text-anchor="middle" font-size="10" fill="#1b4d39">Student</text>
+
+  <!-- device -->
+  <rect x="360" y="104" width="300" height="68" rx="10" fill="#ffffff" stroke="#2E7D5B" stroke-width="1.6"/>
+  <text x="510" y="125" text-anchor="middle" font-size="14" font-weight="700" fill="#1b4d39">ESP32-S3 device  (≈US$15-20)</text>
+  <text x="510" y="143" text-anchor="middle" font-size="11" fill="#33523f">BOOT: click = talk (VAD, no wake word) · long-press = export</text>
+  <text x="510" y="159" text-anchor="middle" font-size="11" fill="#33523f">OLED patient persona · microphone + speaker</text>
+
+  <!-- student -> device -->
+  <line x1="270" y1="138" x2="358" y2="138" stroke="#2E7D5B" stroke-width="1.6" marker-end="url(#arrG)"/>
+  <text x="314" y="130" text-anchor="middle" font-size="9.5" fill="#2E7D5B">speaks</text>
+
+  <!-- ============ BAND B : INFRASTRUCTURE ============ -->
+  <rect x="20" y="206" width="880" height="174" rx="12" fill="#E7F0FA" stroke="#c4dcf2"/>
+  <text x="38" y="232" font-size="13" font-weight="700" fill="#16395f">② INFRASTRUCTURE</text>
+  <text x="38" y="250" font-size="11" fill="#2563A8">self-hosted server</text>
+  <text x="38" y="266" font-size="9.5" fill="#3f6592">in this repo:</text>
+  <text x="38" y="278" font-size="9.5" fill="#3f6592">firmware/</text>
+  <text x="38" y="290" font-size="9.5" fill="#3f6592">server_patches/</text>
+  <text x="38" y="303" font-size="8.5" fill="#7aa0c2">on xiaozhi-esp32-</text>
+  <text x="38" y="314" font-size="8.5" fill="#7aa0c2">server base</text>
+
+  <!-- server container -->
+  <rect x="300" y="224" width="420" height="138" rx="10" fill="#ffffff" stroke="#2563A8" stroke-width="1.6"/>
+  <text x="510" y="245" text-anchor="middle" font-size="13" font-weight="700" fill="#16395f">Self-hosted server  (local-only, no cloud fallback)</text>
+
+  <!-- pipeline pills -->
+  <rect x="316" y="262" width="118" height="34" rx="7" fill="#E7F0FA" stroke="#2563A8"/>
+  <text x="375" y="283" text-anchor="middle" font-size="11" fill="#16395f">FunASR ASR</text>
+  <rect x="452" y="262" width="146" height="34" rx="7" fill="#E7F0FA" stroke="#2563A8"/>
+  <text x="525" y="283" text-anchor="middle" font-size="11" fill="#16395f">Ollama patient LLM</text>
+  <rect x="616" y="262" width="88" height="34" rx="7" fill="#E7F0FA" stroke="#2563A8"/>
+  <text x="660" y="283" text-anchor="middle" font-size="11" fill="#16395f">TTS voice</text>
+  <line x1="434" y1="279" x2="450" y2="279" stroke="#64748b" stroke-width="1.4" marker-end="url(#arr)"/>
+  <line x1="598" y1="279" x2="614" y2="279" stroke="#64748b" stroke-width="1.4" marker-end="url(#arr)"/>
+
+  <!-- endpoint pill -->
+  <rect x="316" y="312" width="388" height="34" rx="7" fill="#fef6e7" stroke="#d9a441"/>
+  <text x="510" y="333" text-anchor="middle" font-size="11.5" fill="#7a5410">POST /aivmt/encounter  →  de-identified encounter JSON archive</text>
+
+  <!-- device <-> server (audio) -->
+  <line x1="470" y1="172" x2="470" y2="223" stroke="#64748b" stroke-width="1.8" marker-start="url(#arr)" marker-end="url(#arr)"/>
+  <text x="362" y="196" text-anchor="middle" font-size="10" fill="#475569">audio ⇅ WebSocket</text>
+
+  <!-- device -> endpoint (export), routed down the right margin to clear the server box -->
+  <path d="M624 172 C 792 200, 792 312, 706 330" fill="none" stroke="#64748b" stroke-width="1.6" stroke-dasharray="5 3" marker-end="url(#arr)"/>
+  <text x="800" y="248" text-anchor="middle" font-size="10" fill="#475569">long-press</text>
+  <text x="800" y="261" text-anchor="middle" font-size="10" fill="#475569">export</text>
+
+  <!-- ============ BAND C : SOFTWARE ============ -->
+  <rect x="20" y="396" width="880" height="180" rx="12" fill="#F0EAF8" stroke="#dccdf0"/>
+  <text x="38" y="422" font-size="13" font-weight="700" fill="#3f2c63">③ SUPPORTING</text>
+  <text x="38" y="439" font-size="13" font-weight="700" fill="#3f2c63">SOFTWARE</text>
+  <text x="38" y="457" font-size="9.5" fill="#6d4aa3">in this repo:</text>
+  <text x="38" y="469" font-size="9.5" fill="#6d4aa3">src/aivmt</text>
+
+  <!-- C1 case authoring -->
+  <rect x="170" y="430" width="196" height="92" rx="10" fill="#ffffff" stroke="#6D4AA3" stroke-width="1.6"/>
+  <text x="268" y="452" text-anchor="middle" font-size="12" font-weight="700" fill="#3f2c63">Case-authoring portal</text>
+  <text x="268" y="470" text-anchor="middle" font-size="10.5" fill="#52407a">+ persona compiler</text>
+  <text x="268" y="487" text-anchor="middle" font-size="10.5" fill="#52407a">specialty · difficulty</text>
+  <text x="268" y="503" text-anchor="middle" font-size="10.5" fill="#52407a">disclosure · zh/en</text>
+
+  <!-- C2 scoring -->
+  <rect x="386" y="430" width="208" height="92" rx="10" fill="#ffffff" stroke="#6D4AA3" stroke-width="1.6"/>
+  <text x="490" y="452" text-anchor="middle" font-size="12" font-weight="700" fill="#3f2c63">Scoring pipeline</text>
+  <text x="490" y="470" text-anchor="middle" font-size="10.5" fill="#52407a">history + SEGUE + reasoning</text>
+  <text x="490" y="492" text-anchor="middle" font-size="11" font-weight="600" fill="#3f2c63">→ CompetencyScore</text>
+  <text x="490" y="507" text-anchor="middle" font-size="11" font-weight="600" fill="#3f2c63">+ Feedback</text>
+
+  <!-- C3 validation -->
+  <rect x="614" y="430" width="246" height="92" rx="10" fill="#ffffff" stroke="#6D4AA3" stroke-width="1.6"/>
+  <text x="737" y="452" text-anchor="middle" font-size="12" font-weight="700" fill="#3f2c63">Faculty portal + Validation</text>
+  <text x="737" y="470" text-anchor="middle" font-size="10.5" fill="#52407a">ICC / QWK / Bland–Altman / G-theory</text>
+  <rect x="648" y="480" width="178" height="30" rx="8" fill="#E6F4EC" stroke="#2E7D5B" stroke-width="1.4"/>
+  <text x="737" y="500" text-anchor="middle" font-size="12.5" font-weight="700" fill="#1b4d39">Overall ICC = 0.903</text>
+
+  <!-- endpoint -> scoring -->
+  <line x1="510" y1="346" x2="490" y2="428" stroke="#64748b" stroke-width="1.7" marker-end="url(#arr)"/>
+  <text x="430" y="392" text-anchor="middle" font-size="10" fill="#475569">encounter JSON</text>
+
+  <!-- case authoring -> server LLM (defines patient) -->
+  <path d="M268 430 C 268 360, 360 320, 452 290" fill="none" stroke="#6D4AA3" stroke-width="1.6" stroke-dasharray="5 3" marker-end="url(#arr)"/>
+  <text x="250" y="360" text-anchor="middle" font-size="10" fill="#6D4AA3">persona / case</text>
+
+  <!-- scoring -> validation -->
+  <line x1="594" y1="476" x2="612" y2="476" stroke="#64748b" stroke-width="1.6" marker-end="url(#arr)"/>
+
+  <!-- faculty ratings inbound -->
+  <line x1="737" y1="576" x2="737" y2="524" stroke="#64748b" stroke-width="1.5" marker-end="url(#arr)"/>
+  <text x="737" y="592" text-anchor="middle" font-size="10" fill="#475569">blinded faculty ratings</text>
+
+  <!-- ============ LEGEND ============ -->
+  <g font-size="11" fill="#374151">
+    <rect x="150" y="616" width="14" height="14" rx="3" fill="#E6F4EC" stroke="#2E7D5B"/>
+    <text x="170" y="627">① Firmware · device</text>
+    <rect x="330" y="616" width="14" height="14" rx="3" fill="#E7F0FA" stroke="#2563A8"/>
+    <text x="350" y="627">② Infrastructure · server</text>
+    <rect x="540" y="616" width="14" height="14" rx="3" fill="#F0EAF8" stroke="#6D4AA3"/>
+    <text x="560" y="627">③ Supporting software · analysis</text>
+  </g>
+</svg>

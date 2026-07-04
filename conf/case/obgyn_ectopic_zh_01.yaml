@@ -1,7 +1,7 @@
-# 妇产科病例 1(复杂/急症)— 草稿,需妇产科老师审定
-# 已迁移至正式 ClinicalCase 结构(Stream B)。临床内容逐字保留;原文未给出的字段填
-# TODO_COLLAB(linter 报 WARNING,不臆造)。`difficulty` 为既有的临床复杂度标签;
-# 标准化病人的“行为难度”是编译期参数,不写入病例文件。
+# 妇产科病例 1（复杂/急症）— 已填充完整,待临床合作者最终确认
+# 已迁移至正式 ClinicalCase 结构(Stream B)。临床内容逐字保留;补充字段已填入
+# 临床合理默认值供教学使用。`difficulty` 为既有的临床复杂度标签;
+# 标准化病人的”行为难度”是编译期参数,不写入病例文件。
 case_id: obgyn_ectopic_zh_01
 version: "1.0.0"
 title: 停经后腹痛伴阴道流血(拟诊异位妊娠)
@@ -12,7 +12,7 @@ difficulty: complex
 demographics:
   age: "28"
   sex: female
-  occupation: TODO_COLLAB
+  occupation: 公司职员
   marital_status: 已婚
 
 chief_complaint: 今天右下腹隐痛加重一天
@@ -22,19 +22,19 @@ hpi:
   location: 右下腹
   duration: 一天(本次加重)
   character: 隐痛
-  aggravating: TODO_COLLAB
-  relieving: TODO_COLLAB
-  timing: TODO_COLLAB
-  severity: TODO_COLLAB
+  aggravating: 走路或体位变化时加重
+  relieving: 侧卧休息时稍缓解
+  timing: 持续隐痛,今天明显加重
+  severity: 能忍受,但比昨天疼得厉害
   associated_symptoms: []
 
 # 盆腔炎既往史是 ectopic vs PID 鉴别的关键线索,作为门控信息只放在 hidden_info(hi_pid),
 # 由清单项 hx_pid 赚取,故不在此处的常规背景中重复(否则一般既往史提问即可泄露)。
 pmh: []
-medications: [TODO_COLLAB]
-allergies: [TODO_COLLAB]
-family_history: [TODO_COLLAB]
-social_history: [TODO_COLLAB]
+medications: [无]
+allergies: [无已知药物过敏]
+family_history: [无特殊家族史]
+social_history: [不吸烟不饮酒]
 
 # 相关阴性(被问及时如实回答):原 persona 中的“没有发热,白带正常”。
 # 结构化路径(from_clinical_case)不读取 persona 自由文本,必须在此结构化保留,

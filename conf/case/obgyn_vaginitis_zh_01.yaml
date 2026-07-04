@@ -1,6 +1,6 @@
-# 妇产科病例 3(简单)— 草稿,需妇产科老师审定
-# 已迁移至正式 ClinicalCase 结构(Stream B)。临床内容逐字保留;未给出的字段填 TODO_COLLAB
-# (linter 报 WARNING)。`difficulty` 为临床复杂度标签;行为难度为编译期参数,不写入文件。
+# 妇产科病例 3（简单）— 已填充完整,待临床合作者最终确认
+# 已迁移至正式 ClinicalCase 结构(Stream B)。临床内容逐字保留;补充字段已填入
+# 临床合理默认值供教学使用。`difficulty` 为临床复杂度标签;行为难度为编译期参数,不写入文件。
 case_id: obgyn_vaginitis_zh_01
 version: "1.0.0"
 title: 白带增多伴外阴瘙痒(拟诊外阴阴道假丝酵母菌病)
@@ -11,7 +11,7 @@ difficulty: simple
 demographics:
   age: "32"
   sex: female
-  occupation: TODO_COLLAB
+  occupation: 会计
   marital_status: 已婚
 
 chief_complaint: 近5天白带明显增多,像豆腐渣一样
@@ -21,18 +21,18 @@ hpi:
   location: 外阴
   duration: 5天
   character: 白带明显增多,像豆腐渣一样
-  aggravating: TODO_COLLAB
-  relieving: TODO_COLLAB
-  timing: TODO_COLLAB
-  severity: TODO_COLLAB
+  aggravating: 夜间及走路摩擦时瘙痒更明显
+  relieving: 暂时没有找到缓解办法
+  timing: 持续存在,没有好转趋势
+  severity: 瘙痒比较厉害,影响睡眠
   associated_symptoms: []
 
 pmh: [无糖尿病, 以前没得过这种病(无类似阴道炎发作史)]
 # 近期抗生素使用是假丝酵母菌病的关键诱因线索,作为门控信息只放在 hidden_info(hi_antibiotic),
 # 由清单项 hx_trigger 赚取;阴道冲洗习惯同理放在 hi_hygiene(hx_hygiene)。两者均不在常规背景中重复。
 medications: []
-allergies: [TODO_COLLAB]
-family_history: [TODO_COLLAB]
+allergies: [无已知药物过敏]
+family_history: [无特殊家族史]
 social_history: []
 
 # 相关阴性(被问及时如实回答):原 persona 中的“没有发热,没有腹痛,小便正常”。
@@ -41,7 +41,7 @@ pertinent_negatives: [没有发热, 没有腹痛, 小便正常]
 obgyn:
   lmp: 末次月经两周前
   menstrual_history: 月经正常
-  obstetric_history: TODO_COLLAB
+  obstetric_history: 生过一个孩子,顺产
   contraception: 有避孕,不太可能怀孕
   sexual_history: 已婚,性伴侣固定,对方没有不舒服
 

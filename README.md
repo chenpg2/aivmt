@@ -109,8 +109,11 @@ YAML
 python app.py
 ```
 
-The device points at `http://<SERVER_LAN_IP>:8003`. **Note:** the default TTS is EdgeTTS (cloud);
-swap it for a local TTS engine for fully offline operation — see [docs/SERVER.md](docs/SERVER.md).
+The device points at `http://<SERVER_LAN_IP>:8003`. For **fully offline** operation, select the
+local **Piper** TTS provider (`firmware/server_patches/tts_piper.py`; set `selected_module.TTS:
+PiperTTS`) instead of the cloud EdgeTTS default — then no component of the loop calls an external
+service (FunASR ASR → Ollama LLM → Piper TTS, all on the host). See
+[firmware/server_patches/tts_piper.README.md](firmware/server_patches/tts_piper.README.md).
 
 </details>
 

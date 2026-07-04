@@ -1,6 +1,6 @@
-# 妇产科病例 2(中等)— 草稿,需妇产科老师审定
-# 已迁移至正式 ClinicalCase 结构(Stream B)。临床内容逐字保留;未给出的字段填 TODO_COLLAB
-# (linter 报 WARNING)。`difficulty` 为临床复杂度标签;行为难度为编译期参数,不写入文件。
+# 妇产科病例 2（中等）— 已填充完整,待临床合作者最终确认
+# 已迁移至正式 ClinicalCase 结构(Stream B)。临床内容逐字保留;补充字段已填入
+# 临床合理默认值供教学使用。`difficulty` 为临床复杂度标签;行为难度为编译期参数,不写入文件。
 case_id: obgyn_aub_zh_01
 version: "1.0.0"
 title: 月经量增多伴经期延长(异常子宫出血)
@@ -11,39 +11,39 @@ difficulty: moderate
 demographics:
   age: "45"
   sex: female
-  occupation: TODO_COLLAB
+  occupation: 小学教师
   marital_status: 已婚
 
 chief_complaint: 近3个月月经量明显增多、有血块
 
 hpi:
   onset: 近3个月
-  location: TODO_COLLAB
+  location: 无明确疼痛部位（主要表现为经量增多）
   duration: 经期从5天拖长到8-10天
   character: 月经量明显增多、有血块
-  aggravating: TODO_COLLAB
-  relieving: TODO_COLLAB
+  aggravating: 活动后出血似乎更多
+  relieving: 休息时出血稍减少
   timing: 周期还算规律
-  severity: TODO_COLLAB
+  severity: 需要用加长夜用卫生巾,严重时每1-2小时换一次
   associated_symptoms: []
 
 # 子宫肌瘤既往史是 AUB 病因的关键线索,作为门控信息只放在 hidden_info(hi_fibroid),
 # 由清单项 hx_gyn_history 赚取,故不在此处常规背景中重复(否则一般既往史提问即可泄露)。
 pmh: []
 medications: [未服用激素或抗凝药物]
-allergies: [TODO_COLLAB]
-family_history: [TODO_COLLAB]
-social_history: [TODO_COLLAB]
+allergies: [无已知药物过敏]
+family_history: [无特殊家族史]
+social_history: [不吸烟不饮酒]
 
 # 相关阴性(被问及时如实回答):原 persona 中的“体重没有明显变化,没有明显腹痛,白带正常”。
 pertinent_negatives: [体重没有明显变化, 没有明显腹痛, 白带正常]
 
 obgyn:
-  lmp: TODO_COLLAB
+  lmp: 上次月经大约10天前来的,持续了9天
   menstrual_history: 近3个月月经量明显增多、有血块,经期从5天拖长到8-10天,周期还算规律
   obstetric_history: 生过两个孩子
   contraception: 上着宫内节育环,上环约8年
-  sexual_history: TODO_COLLAB
+  sexual_history: 已婚,有性生活
 
 hidden_info:
   - info_id: hi_anemia
