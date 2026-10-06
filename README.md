@@ -221,8 +221,8 @@ aivmt/
 ## Data and code availability
 
 - **Code.** All system code — the `aivmt_sp` firmware layer, the `/aivmt/encounter` server endpoint,
-  the scoring pipeline, and the validation harness — is in this repository. It is **private pending
-  publication** and will be released under an open-source license on acceptance.
+  the scoring pipeline, and the validation harness — is in this repository, released under the
+  MIT License (see [`LICENSE`](LICENSE)).
 - **Data.** The **synthetic**, case-grounded evaluation apparatus ([`data/eval_transcripts/`](data/eval_transcripts/),
   provenance `synthetic`) is included. De-identified **faculty ratings** and **student encounter
   transcripts** are **not** publicly distributed, to protect participant confidentiality; they are
@@ -246,10 +246,10 @@ citation and BibTeX entry will be added on acceptance.
 
 ## License
 
-Research code accompanying a manuscript **submitted to** *npj Digital Medicine*. 
-© 2026 the AIVMT authors. 
-**All rights reserved pending publication**; an open-source license will be applied on
-acceptance.
+Released under the **MIT License**; see [`LICENSE`](LICENSE). © 2026 the AIVMT authors.
+The firmware layer and server patches build on [`xiaozhi-esp32`](https://github.com/78/xiaozhi-esp32)
+and [`xiaozhi-esp32-server`](https://github.com/xinnan-tech/xiaozhi-esp32-server), which are also
+MIT-licensed; their own copyright notices apply to code taken from them.
 
 ## Acknowledgements
 
